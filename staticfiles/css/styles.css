@@ -1,0 +1,80 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+h1, h2 {
+    color: #444;
+}
+
+.cart-item {
+    display: flex;
+    gap: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background-color: #fff;
+}
+
+.cart-item h3 {
+    margin: 0 0 5px;
+    font-size: 18px;
+    color: #555;
+}
+
+.cart-item p {
+    margin: 3px 0;
+    font-size: 14px;
+}
+
+.cart-summary {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+    text-align: right;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background-color: #ddd;
+}
+
+.cart {
+    margin-top: 20px;
+}
+
+.order-form form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background-color: #fff;
+}
+
+.order-form{
+    display: none;
+}
+
+@keyframes pulse-opacity {
+    0% {
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 0.2;
+    }
+}
+
+.pulsing {
+    animation: pulse-opacity 1.5s infinite ease-in-out;
+}
+

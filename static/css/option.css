@@ -1,0 +1,79 @@
+.custom_optins{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 1000;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        
+    }
+
+    .custom_optins button{
+        border: none;
+        background-color: #ffffff00;
+        cursor: pointer;
+    }
+
+    .custom_optins ul{
+        text-decoration: none;
+        margin: 0px;
+        padding: 0px;
+    }
+    .custom_optins li{
+        text-decoration: none;
+        margin: 0px;
+        padding: 0px;
+    }
+
+
+    .optin-block{
+        background-color: white;
+    }
+
+    .optin-update{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .optin-update select{
+        width: 100%;
+    }
+
+    .optin-price{
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .nav-btn{
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .header-panel{
+        width: 100%;
+        display: flex;
+        justify-content: end;
+        background-color: #79aec8;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .header-panel button{
+        background-color: rgba(255, 255, 255, 0);
+        border: none;
+        color: white;
+        padding: 5px;
+    }
+
+    .update-panel{
+        padding: 10px;
+    }
