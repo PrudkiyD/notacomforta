@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кошик</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style >
+        
+    </style>
+</head>
+<body>
+    <h1>Ваш кошик</h1>
+    <div class="order-form">
+        <form action="/order/successful/", method="post">
+            {% csrf_token %}
+            <input type="text" name="customer" id="">
+            <input type="text" name="phone" id="">
+            <textarea type="text" name="coment" id=""></textarea>
+            <button type="submit" class="checkout">Оформити замовлення</button>
+        </form>
+    </div>
+    <div class="cart">
+        <p>Завантаження...</p>
+    </div>
+    
+    <script src="{% static 'js/basket.js' %}"></script>
+
+</body>
+</html>

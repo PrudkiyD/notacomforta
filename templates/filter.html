@@ -1,0 +1,91 @@
+<div class="filterProduct">
+    <strong>Фільтри</strong>
+
+    <div class="filterSizeBloc">
+        <strong>Сортувати за ціною</strong>
+        <div>
+            <select name="sort" id="">
+                <option value="price">Від меншої</option>
+                <option value="-price">Від більшої</option>
+            </select>
+        </div>
+    </div>
+
+    {% if manufacturer_list %}
+    <div class="filterSizeBloc">
+        <strong>Виробник</strong>
+        <div>
+            <select name="manufacturer" id="">
+                <option value="all">Всі виробники</option>
+                {% for manufacturer in manufacturer_list %}
+                    <option value="{{manufacturer.id}}">{{manufacturer.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    {% endif %}
+
+    
+    <div class="filterSizeBloc">
+        {% if width_list|length > 1 or height_list|length > 1 or depth_list|length > 1 %}
+            <strong>Розміри</strong>
+            <div>
+                {% if width_list|length > 1 %}
+                <p style="font-size:13px">Ширина</p>
+                <select name="width" id="">
+                    <option value="all">Всі розміри</option>
+                    {% for width in width_list %}
+                        <option value="{{width}}">{{width}}</option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+
+                {% if height_list|length > 1  %}
+                <p style="font-size:13px">Висота</p>
+                <select name="height" id="">
+                    <option value="all">Всі розміри</option>
+                    {% for height in height_list %}
+                        <option value="{{height}}">{{height}}</option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+
+                {% if depth_list|length > 1  %}
+                <p style="font-size:13px">Довжина</p>
+                <select name="depth" id="">
+                    <option value="all">Всі розміри</option>
+                    {% for depth in depth_list %}
+                        <option value="{{depth}}">{{depth}}</option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let params = new URLSearchParams(window.location.search);
+
+    document.querySelectorAll(".filterProduct select").forEach(select => {
+        let value = params.get(select.name);
+
+        // Якщо значення є в URL і воно є серед опцій, встановлюємо його
+        if (value && [...select.options].some(option => option.value === value)) {
+            select.value = value;
+        }
+
+        select.addEventListener("change", function () {
+            if (this.value === "all") {
+                params.delete(this.name); // Видаляємо параметр, якщо вибрано "Всі"
+            } else {
+                params.set(this.name, this.value);
+            }
+            window.location.search = params.toString();
+        });
+    });
+});
+
+</script>
+    
+    

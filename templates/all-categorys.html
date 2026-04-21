@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="all-categorys">
+    <h1 style="font-size: 20px; font-weight: 600;">{{ title }}</h1>
+    <ul class="categorys">
+        {% for category in categorys %}
+            <li>
+                
+                <h2 class="category">
+                    <strong>
+                        
+                        <a href="/catalog/{{category.slug}}">
+                            <img width="50px" src="/media/{{category.image}}" alt="">
+                            <br>
+                            <br>
+                            {{category.name}}
+                        </a>
+                    </strong>
+                </h2>
+                <ul class="subcategories">
+                    {% for subcategorie in category.subcategories.all %}
+                        <li>
+                            <h3 class="subcategory">
+                                <a href="/catalog/{{category.slug}}/{{subcategorie.slug}}">{{subcategorie.name}}</a>
+                            </h3>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+            
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}

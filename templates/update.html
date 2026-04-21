@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{%  static 'pars/pars.css' %}">
+    <title>Оновлення бази даних</title>
+</head>
+
+<body>
+    <div class="conteiner">
+
+            <form action="/update/" method="GET">
+                <select name="manufacturer" id="">
+                    <option value="0">Оберіть виробника</option>
+                    <option value="1">Комфорт Меблі</option>
+                    <option value="2">Світ меблів</option>
+                    <option value="4">Matroluxe</option>
+                    <option value="5">Фенікс Меблі</option>
+                    <option value="6">Richman</option>
+                    <option value="7">Ліон</option>
+                    <option value="8">ВМК</option>
+                    <option value="9">Гербор</option>
+                    <option value="10">Еверест</option>
+                    <option value="11">Неман</option>
+                    <option value="12">Естела</option>
+                    <option value="13">Тенеро</option>
+                    <option value="144">Олімп</option>
+                    <option value="14">Arbor Drev</option>
+                    <option value="15">EMM</option>
+                    <option value="16">Eurosleep</option>
+                    <option value="17">Мікс меблі</option>
+                    <option value="18">Компаніт</option>
+                    <option value="19">Jam</option>
+                    <option value="20">Модуль люкс</option>
+                    <option value="21">Юдін</option>
+                </select>
+                
+                
+                <button type="submit">Завантажити</button>
+                <a href="/admin/">Адміністрування</a>
+                <a href="/">Дивитися сайт</a>
+                {% if msg %}
+                    <div class="msg"><p>{{ msg }}</p></div>
+                
+                {% endif%}
+            </form>
+
+            
+    </div>
+</body>
+
+</html>

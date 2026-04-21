@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<form action="">
+    <label for="number">Відстежити замовлення:</label>
+    <input type="text" name="number" placeholder="Укажіть номер замовлення" id="">
+    <button type="submit">Шукати</button>
+</form>
+<br>
+<br>
+{% if order %}
+<div style="background-color: white; padding: 10px 20px 20px 20px;">
+    <p>Замовлення №<strong>{{ order.id }}</strong></p>
+    <p>Ім'я: <strong>{{ order.customer }}</strong></p>
+    <p>Телефон: <strong>{{ order.phone }}</strong></p>
+    <p>Коментар: <strong>{{ order.coment }}</strong></p>
+    <p>Загальна сума: <strong>{{ order.total }} грн.</strong></p>
+    <br>
+    <h2 style="font-size: 16px;">Товари у замовленні:</h2>
+    <ul class="order-text">
+        {% for item in order.items.all %}
+            <li style="display: flex; gap: 20px;" >
+                <img src="{{ item.img}}" alt="" width="150px">
+                <div>
+                    <a style="color: black; font-weight: 800" href="/catalog/product/{{ item.product.id}}">
+                        {{ item.product.name }} 
+                    </a>
+                    <p style="font-size: 14px; font-weight: 400;" >{{ item.quantity }} шт. - {{ item.product_price.price }} грн.</p>
+                </div>
+                
+            </li>
+            <br>
+        {% endfor %}
+    </ul>
+    <br>
+    <button class="go"> <a href="/">Продовжити покупки</a></button>
+</div>
+{% endif %}
+
+{% endblock %}

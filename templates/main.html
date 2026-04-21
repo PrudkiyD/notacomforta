@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="conteiner">
+    <h1 style="font-size: 20px; font-weight: 600;">{{title}}</h1>
+</div>
+
+<div class="baner">
+    
+    <link rel="stylesheet" href="{%  static 'css/slider.css' %}">
+    <div class="conteiner">
+        <div class="slider">
+            {% for el in slider_img %}
+                <div class="slider-item">
+                    <a href="{{el.url}}">
+                        
+                        <img loading="lazy" class="img-slid" src="/media/{{el.img}}" alt="{{el.name}}">
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <div class="recommend">
+        <div class="conteiner">
+            <div style="margin-bottom: 10px;" class="saleBloc">
+                <div class="saleText"><div>Вітрина</div>
+            </div>
+            </div>
+
+            <div class="product">
+                {% for price in products %}
+                    {% include 'product_card.html' %}
+                {% endfor %}
+            </div>
+
+            {% include 'info.html' %}
+
+            <div class="mainText">
+                <div class="youVideo">
+                    <iframe src="https://www.youtube.com/embed/2f-NKZ36NbU" frameborder="0"></iframe>
+                </div>
+                {{ elements.3.content | safe }}
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="{%  static 'js/slick.min.js' %}"></script>
+<script src="{%  static 'js/mainSlider.js' %}"></script>
+{% endblock %}

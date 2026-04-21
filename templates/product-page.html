@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="conteiner">
+    <article class="recommend">
+        <div class="card-bloc">
+
+            <div id="zoom-img" class="zoom-img-close">
+                <div class="img-box">
+                    <div class="btn-close"> <img src="{% static 'css/close-circle-svgrepo-com.svg'%}" alt=""></div>
+                    <div class="img-big"></div>
+                    <div class="img-lite"></div>
+                </div>
+            </div>
+            <div style="display: flex; margin-bottom: 10px; color: black;">
+            </div>
+            
+            <h1 class="product-title">{{title}}</h1>
+            <div data-id="/lizhka/{{item_name.id}}" class="product-card-bloc">
+                {% if prices.first.sale %}
+                    <div class="saleLabel" ><img loading="lazy" src="/media/sales-label.svg" alt=""><div>Знижка</div></div>
+                {% endif %}
+
+                <div class="slider">
+                    {% if item.images.all%}
+                        {% for el in item.images.all %}
+                            {% if el.is_main %} 
+                                <div class="slider-item">
+                                    <img class="img-slid" 
+                                    {% if el.image.name|slice:":4" == "http" %}
+                                        src="{{ el.image }}" 
+                                    {% else %}
+                                        src="{{ el.image.url }}"   
+                                    {% endif %}
+                                        alt="{{title}}">
+
+                                    
+                                    
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        {% for el in item.images.all %}
+                                <div class="slider-item">
+                                    <img class="img-slid" 
+                                    {% if el.image.name|slice:":4" == "http" %}
+                                        src="{{ el.image }}" 
+                                    {% else %}
+                                        src="{{ el.image.url }}"   
+                                    {% endif %}
+                                    alt="{{title}}">
+                                </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="slider-item">
+                            <img 
+                                loading="lazy"  
+                                src="/media/undefined.svg" 
+                                alt="" 
+                                class="product-img">
+                        </div>
+                    {% endif %}
+
+
+                    <script>
+                        $(document).ready(function () {
+                            $('.slider').slick({
+                                speed: 700,
+                                easing: 'ease',
+                                autoplay: true,
+                                autoplaySpeed: 2500,
+                                variableWidth: false,
+                            });
+                        });
+                    </script>
+                </div>
+
+            
+            
+
+            
+
+            <div class="get-product">
+                <div class="manufacturer-name">
+                    <li>Виробник:</li>
+                    <li>{{item.manufacturer}}</li>
+                </div>
+                <div style="width: 100%; display: flex; justify-content: space-between; margin-bottom: 20px;">
+                    <div>Артикул:</div>
+                    <div>{{item.id}}</div>
+                </div>
+
+                {% if prices|length > 1 %}
+                    <div class="sizeBloc">
+                        <div>Оберіть конфігурацію:</div>
+                        <br>
+                        {% for el in prices %}
+                            {% if el.is_main %}
+                                <button class="chane-price" 
+                                    style="border:solid 1px #367AF6;"
+                                    data-id="{{item.id}}"
+                                    data-price="{{el.price}}"
+                                    type="button"
+                                    >
+                                    {% if el.info %}
+                                        {{el.info}}<br>
+                                    {% endif %}
+
+                                    {% if el.setup %}
+                                        {{el.setup}}<br>
+                                    {% endif %}
+                                    
+                                    {{el.width}}x{{el.height}}x{{el.depth}}
+                                </button>
+                            {% else %}
+                                <button class="chane-price" 
+                                    data-id="{{item.id}}"
+                                    data-price="{{el.price}}"
+                                    type="button"
+                                    >
+                                    {% if el.info %}
+                                        {{el.info}}<br>
+                                    {% endif %}
+
+                                    {% if el.setup %}
+                                        {{el.setup}}<br>
+                                    {% endif %}
+                                    
+                                    {% if el.width %}{{el.width}}x{% endif %}{% if el.height %}{{el.height}}x{% endif %}{% if el.depth %}{{el.depth}}{% endif %}
+                                </button>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="get-product-price">
+                    <div class="curent-price">{{prices.first.price}}</div>
+                    <div class="get-product-text">{{prices.first.unit}}</div>
+                </div>
+                <button 
+                    type="button" 
+                    data-action="add" 
+                    class="add-cart"
+
+                    data-product="{{ item.id }}" 
+                    data-price="{{prices.first.id}}" >
+
+                    <div 
+                        data-action="add"
+                        data-product="{{ item.id }}" 
+                        data-price="{{prices.first.id}}" 
+                    >Додати в кошик</div>
+                </button>
+                {% if user.is_superuser %}
+                    <button type="button">
+                        <a href="/admin/catalog/product/{{ item.id }}/change/">Редагувати</a>
+                    </button>
+                {% endif %}
+                <span class="info">
+                    <p>Зверніться за номерами телефону +380980846244 +380957784449 або за адресою м. Полтава вул.
+                        Виноградна
+                        8А.</p>
+
+                    <p>Ми допоможемо обрати найкращий
+                        для вас варіант.</p>
+
+                </span>
+
+            </div>
+
+        </div>
+        <div class="description-prod-bloc">
+            <div class="des-list">
+                <div class="des-title"><div>Опис</div></div>
+                <div class="des-text">
+                    <span>{{item.description | safe}}</span>
+                </div>
+
+            </div>
+        </div>
+        
+        {% if group_product %}
+        <div class="saleBloc">
+            <div class="saleText"><div>Товари з набору</div></div>
+            <div class="saleProd">
+                <div class="saleWraper">
+                    {% for price in group_product %}
+                        {% include 'product_card.html' %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% if sale_products %}
+        <div class="saleBloc">
+            <div class="saleText"><div>Акційні товари</div></div>
+            <div class="saleProd">
+                <div class="saleWraper">
+                    {% for price in sale_products %}
+                        {% include 'product_card.html' %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="cardInfoBloc">
+            {% include 'info.html' %}
+        </div>
+        <div class="mapbg">
+            <div style="overflow: hidden; border-radius: 10px;">
+                <iframe  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2585.8914212238483!2d34.49030341570082!3d49.59979697936707!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40d829452d278237%3A0xb4409a77007229d4!2zItCd0L7RgtCwINCa0L7QvNGE0L7RgNGC0LAiINGE0LjRgNC80LXQvdC90YvQuSDQvNCw0LPQsNC30LjQvSDRhNCw0LHRgNC40LrQuCAi0JrQntCc0KTQntCg0KIg0JzQldCR0JXQm9CsIg!5e0!3m2!1suk!2sua!4v1676190353014!5m2!1suk!2sua" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>        
+        </div>
+    </article>
+</div>
+</div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+    const buttons = document.querySelectorAll('.chane-price');
+    buttons.forEach(element => {
+        element.addEventListener('click', function(){
+            buttons.forEach(btn =>{
+                btn.style = ''
+            })
+            
+            document.querySelector('.curent-price').innerText = element.dataset.price
+            element.style = 'border:solid 1px #367AF6;'
+        })
+    });
+});
+
+</script>
+
+
+
+<script src="{%  static 'js/slick.min.js' %}"></script>
+<script src="{%  static 'js/img.js' %}"></script>
+
+{% endblock %}
+
+

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block filters %}
+    {% if show_filter %}
+        {% include 'filter.html' %}
+    {% endif%}
+{% endblock %}
+
+{% block content %}
+<div class="recommend">
+    <div class="container">
+        <h1 style="font-size: 20px; font-weight: 600;">{{title}}</h1>
+        <div class="sofaForm">
+            {% for category in categorys %}
+                {% if category.slug == category_slug %}
+                    {% for subcategory in category.subcategories.all %}
+                        <a href="/catalog/{{ category.slug }}/{{ subcategory.slug }}">
+                            <img src="{{ subcategory.image }}" alt="">
+                            <p>{{ subcategory.name }}</p>
+                        </a>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        </div>
+        
+        <div data-action="list" class="product">
+            {% for price in products %}
+                {% include 'product_card.html' %}
+            {% endfor %}
+        </div>
+
+        <br><br>
+        <!-- Пагінація -->
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a class="button-4" href="{{ get_parameters }}page=1">&laquo; Перша</a>
+                <a class="button-4" href="{{ get_parameters }}page={{ page_obj.previous_page_number }}">Попередня</a>
+            {% endif %}
+        
+            {% for num in page_obj.paginator.page_range %}
+                {% if num >= page_obj.number|add:"-3" and num <= page_obj.number|add:"3" %}
+                    {% if num == page_obj.number %}
+                        <span class="button-4 current">{{ num }}</span>
+                    {% else %}
+                        <a class="button-4" href="{{ get_parameters }}page={{ num }}">{{ num }}</a>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        
+            {% if page_obj.has_next %}
+                <a class="button-4" href="{{ get_parameters }}page={{ page_obj.next_page_number }}">Наступна</a>
+                <a class="button-4" href="{{ get_parameters }}page={{ page_obj.paginator.num_pages }}">Остання &raquo;</a>
+            {% endif %}
+        </div>
+        
+    </div>
+    
+</div>
+<br><br>
+
+    
+
+{% endblock %}

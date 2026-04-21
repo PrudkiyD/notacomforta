@@ -1,0 +1,84 @@
+<div data-id="{{ product.id }}" class="product-list">
+    {% if price.sale %}
+        <div class="saleLabel" >
+            <img loading="lazy" src="/media/sales-label.svg" alt="">
+            <div>Знижка</div>
+        </div>
+    {% endif %}
+    <a href="/catalog/product/{{ price.product.id }}">
+        <div class="img-bg">
+            {% if price.product.images.all %}
+
+                {% for img in price.product.images.all %}
+                    {% if img.is_main %}
+                        <img 
+                            loading="lazy"  
+                            {% if img.image.name|slice:":4" == "http" %}
+                                src="{{ img.image }}" 
+                            {% else %}
+                                src="{{ img.image.url }}"   
+                            {% endif %}
+                            alt="{{ price.product.name }}" 
+                            class="product-img">
+                            
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <img 
+                    loading="lazy"  
+                    src="/media/undefined.svg" 
+                    alt="" 
+                    class="product-img">
+            {% endif %}
+        </div>
+        <h2 class="product-name">{{ price.product.name }}</h2>
+    </a>
+    <div class="price-card-bloc">
+        <div class="price">
+            {% if price.old_price %}
+                <div class="old_price">{{ price.old_price }} {{price.unit}}</div>
+                <div class="c-price new_price">{{ price.price }} {{price.unit}}</div>
+            {% else %}
+                <div class="c-price">{{ price.price }} {{price.unit}}</div>
+            {% endif %}
+            
+        </div>
+        <div class="product-shopping-cart">
+            <img 
+                loading="lazy" 
+                data-action="add"
+                data-product="{{ price.product.id }}" 
+                data-price="{{ price.id }}" 
+                src="/media/icone/shopping-cart.svg" alt=""> 
+        </div>
+    </div>
+    <div class="short-des">
+        <ul>
+            <li>{{ price.setup|default:"" }}</li>
+            <li>{{ price.info|default:"" }}</li>
+            <li>
+                {%if price.width or price.height or price.depth %}
+                    Розміри: 
+                {% endif %}
+                {% if price.width %}
+                    {{price.width}} x
+                {% endif %}
+
+                {% if price.height %}
+                    {{price.height}} x
+                {% endif %}
+                
+                {% if price.depth %}
+                    {{price.depth}}
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+    {% if user.is_superuser %}
+        <button type="button">
+            <a href="/admin/catalog/product/{{ price.product.id }}/change/">Редагувати</a>
+        </button>
+    {% endif %}
+</div>
+
+

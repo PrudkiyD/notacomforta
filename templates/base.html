@@ -1,0 +1,284 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-KRZTPHT');</script>
+        <!-- End Google Tag Manager -->
+    <meta name="robots" content="index,follow">
+    <meta name="Address" content="Вул. Олександра Оксанченка 6 Полтава">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://www.notacomforta.pl.ua/">
+    <meta property="og:image" content="{{ imgseo }}">
+    <meta property="og:site_name" content="Нотакомфорта">
+    <meta property="og:title" content="{{ title }}">
+    <meta property="og:description" content="Контактна інформація +380957784449  +380980846244">
+    <link rel="canonical" href="{{ canonical }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{%  static 'css/index.css' %}">
+    <link rel="stylesheet" href="{%  static 'css/loader.css' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+    <script src="{%  static 'js/jquery-3.6.0.min.js' %}"></script>
+    <title>{{ title }}</title>
+</head>
+
+<body>
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KRZTPHT"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <!-- End Google Tag Manager (noscript) -->
+
+    <div class="message">
+        <div>
+            <p>
+                Товар додано в кошик
+            </p>
+        </div>
+    </div>
+
+    <div class="loader">
+        <div class="loader-inner">
+            <div class="loader-line-wrap">
+                <div class="loader-line"></div>
+            </div>
+            <div class="loader-line-wrap">
+                <div class="loader-line"></div>
+            </div>
+            <div class="loader-line-wrap">
+                <div class="loader-line"></div>
+            </div>
+            <div class="loader-line-wrap">
+                <div class="loader-line"></div>
+            </div>
+            <div class="loader-line-wrap">
+                <div class="loader-line"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="wraper">
+
+        <head class="header">
+            <div class="conteiner">
+                <nav class="header-menu">
+                    <ul class="menu">
+                        {% for page in pages %}
+                            <li>
+                                {% if page.outside %}
+                                    <a href="{{page.slug}}" class="header-link">{{page.name}}</a>
+                                {% else %}
+                                    <a href="/information/{{page.slug}}" class="header-link">{{page.name}}</a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                        
+                    </ul>
+                    <div class="lang">
+                    </div>
+                </nav>
+                <div data-action="hshop" class="header-shop">
+                    <a href="/">
+                        <img src="/media/icone/logo.jpg" class="logo" alt="">
+                        <div class="name">
+                            <div>Нота</div>
+                            <div>комфорта</div>
+                        </div>
+                    </a>
+                    <div  class="search">
+
+                        <form action="/catalog/search" method="GET" >
+                            <input 
+                                class="search-input" 
+                                name="q" type="search" 
+                                placeholder="Пошук" 
+                                aria-label="search"
+                                value="{{ request.GET.q }}">
+                            <button class="search-btn" type="submit">
+                                <img src="/media/icone/search-icone.svg" alt="" class="search-icone">
+                            </button>
+                        </form>
+
+                    </div>
+
+                    <div class="shopping-cart">
+                        <div class="cartWraper">
+                            <div class="cartInner">
+                                <div class="btnCartClose" data-action="closeCart"><img data-action="closeCart" class="closeCart" src="/media/icone/icons8-close.png" alt=""></div>
+                                <table class="cartInnerProduct"></table>
+                                <div class="sendForm">
+                                    <form calss="orderform" action="/order/successful/" method=POST>
+                                        {% csrf_token %}
+                                        <input type="hidden" name="key">
+                                        <input class="inputName" name="customer" type="text" placeholder="Прізвище та ім'я">
+                                        <input class="inputPhone" name="phone" type="text" required placeholder="Номер телефону">
+                                        <input class="inputComent" name="coment" type="text" placeholder="Коментар">
+                                        <button class="sendFormBtn" data-action="formBtn" type="submit">Замовити</button>
+                                        
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="num-product">0</div>
+                        <div>
+                            <img data-action="cartBtn" src="/media/icone/shopping-cart.svg" alt="">
+                        </div>
+                    </div>
+                    <div class="number">
+                        <a href="tel:+380957784449">+380957784449</a>
+                        <a href="tel:+380980846244">+380980846244</a>
+                    </div>
+
+                    <div class="timetable">
+                        <div>Графік роботи</div>
+                        <div class="time">10:00 - 18:00 </div>
+                        <div>Неділя вихідний</div>
+                    </div>
+
+                    <div class="call" type="submit">
+                        <div class="callback-bloc">
+                            <div class="callbackBtn">
+                                <div class="cartContacts">
+                                    <a href="tel:+380957784449">+380957784449</a>
+                                    <a href="tel:+380980846244">+380980846244</a>
+
+                            </div>
+                            <img src="/media/icone/phone.svg" alt="" class="callback-img">
+                        </div> 
+                            <a href="https://t.me/Notacomforta"><img src="/media/icone/Telegram_logo.webp" alt="" class="callback-img-tg"></a> 
+                            <a href="viber://chat?number=380957784449"><img src="/media/icone/ViberLogo.png" alt="" class="callback-img-viber"></a>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="catalog-burger">
+                    <div id="burger" class="burger">
+                        <img src="/media/icone/burger-menu.svg" alt="" class="burger-icone"
+                            id="burger-icone">
+                    </div>
+                    <div class="catalog">
+                        <nav>
+                            <ul class="catalog-menu">
+                                <li>
+
+                                    <a href="/catalog/sale" class="catalog-link">
+                                        <img src="/media/icone/sale.svg" alt="" class="catalog-icone">
+                                        <div>Акції</div>
+                                    </a>
+                                </li>
+                                {% for category in categorys %}
+                                <li>
+
+                                    <a href="/catalog/{{category.slug}}" class="catalog-link">
+                                        <img src="/media/{{category.image}}" alt=""
+                                            class="catalog-icone">
+                                        <div>{{category.name}}</div>
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+
+            </div>
+
+        </head>
+        <form method="get" action="" class="content">
+            <div data-action="bloc" class="bloc">
+                <div id="sidebar" class="sidebar">
+                    
+                    <div id="sidebar-bloc" class="sidebar-bloc active-sidebar">
+                        <div class="filters">
+                            {% block filters %}{% endblock %}
+                        </div>
+                        <nav>
+                            <ul>
+                                <li class="sidebar-hover">
+                                    <a href="/catalog/sale" class="sidebar-link">Акції</a>
+                                </li>
+                                {% for category in categorys %}
+                                    <li class="sidebar-hover">
+                                        <a href="/catalog/{{category.slug}}" class="sidebar-link">{{category.name}}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </nav>
+
+                        
+                    </div>
+
+                </div>
+                <main class="content-list">
+                    {% block content %}{% endblock %}
+                    
+                </main>
+
+            </div>
+            
+        </form>
+        <div class="callback">
+            <div class="callback-bloc">
+                <div class="callbackBtn">
+                    <div class="cartContacts">
+                        <a href="tel:+380957784449">+380957784449</a>
+                        <a href="tel:+380980846244">+380980846244</a>
+
+                </div>
+                <img src="/media/icone/phone.svg" alt="" class="callback-img"></div> 
+                <a href="https://t.me/Notacomforta"><img src="/media/icone/Telegram_logo.webp" alt="" class="callback-img-tg"></a> 
+                <a href="viber://chat?number=380957784449"><img src="/media/icone/ViberLogo.png" alt="" class="callback-img-viber"></a>
+            </div>
+        </div>
+        <footer class="footer">
+            <div class="footer-bloc">
+                <div class="social">
+                    <div class="footer-title">Ми у соцмережах:</div>
+                    <a href="https://www.facebook.com/notacomfortapoltava"> <img src="/media/icone/facebook.svg" alt=""></a>
+                    <a href="https://instagram.com/notacomforta_poltava?igshid=YmMyMTA2M2Y="><img src="/media/icone/instagram.svg" alt=""></a>
+                    <a href="mailto:elenamrklv@gmail.com"><img src="/media/icone/gmail.svg" alt=""></a>
+
+                </div>
+                <div class="contact ">
+                    <div class="footer-title">Контакти:</div>
+                    <a href="tel:+380957784449">+380957784449</a>
+                    <a href="tel:+380980846244">+380980846244</a>
+                </div>
+                <div class="address">
+                    <div class="footer-title"> Адреса:</div>
+                    <a style="color: black;" href="https://www.google.com/maps?ll=49.599797,34.492492&z=16&t=m&hl=uk&gl=UA&mapclient=embed&cid=12988551161235778004">
+                        Вул. Олександра Оксанченка 6
+                        <br>місто Полтава</br>
+                    </a>
+                    
+                </div>
+            </div>
+
+
+        </footer>
+        <script src="{%  static 'js/sidebar.js' %}"></script>
+        <script src="{%  static 'js/script.js' %}"></script>
+        <script src="{%  static 'js/card.js' %}"></script>
+        <script>
+            document.querySelector('.loader').style.display = 'none'
+            document.querySelectorAll('.catalog-link').forEach(el=>{
+                el.addEventListener('click', function(){
+                    document.querySelector('.loader').style.display = 'block'
+                })
+            })
+        </script>
+        
+    </div>
+</body>
+
+</html>
