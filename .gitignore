@@ -28,8 +28,8 @@ db.sqlite3-journal
 notadb.sqlite3-journal
 notadb.sqlite3
 media/
-static/
 staticfiles/
+archive/
 
 
 .env

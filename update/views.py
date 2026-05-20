@@ -210,7 +210,8 @@ def update(request):
 def discount(request):
     # Перевірка на суперкористувача
     if not request.user.is_superuser:
-        return HttpResponseForbidden("Access denied")
+        return JsonResponse({"error": "Access denied"}, status=400)
+    
 
     try:
         data = json.loads(request.body)
@@ -238,7 +239,7 @@ def discount(request):
                     p.save()
 
         # Тепер можна працювати з даними з JSON
-        return JsonResponse({"status": "ok", "received": data})
+        return JsonResponse({"status": "ok", "received": data}, status=200)
 
     except json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON"}, status=400)

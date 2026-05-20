@@ -181,6 +181,9 @@ class ProductAdmin(admin.ModelAdmin):
     get_img.short_description = "Зображення"
     main_price.short_description = "Базова ціна"
 
+    class Media:
+        js = ('js/product_admin.js',)
+
 
 @admin.register(Manufacturer)
 class ManufacturerAdmin(admin.ModelAdmin):
