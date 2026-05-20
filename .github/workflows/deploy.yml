@@ -19,4 +19,5 @@ jobs:
             cd /var/www/notacomforta
             git pull origin main
             docker compose up -d --build
+            docker exec notacomforta_app python manage.py migrate --noinput
             docker exec notacomforta_app python manage.py collectstatic --noinput
