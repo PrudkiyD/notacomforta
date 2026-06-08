@@ -9,7 +9,7 @@ class FileAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'url', 'files')
     search_fields = ('name', 'url', 'files')
 
-
+'''
 @admin.register(LogEntry)
 class LogEntryAdmin(admin.ModelAdmin):
     list_display = ('action_time', 'user', 'content_type', 'object_repr', 'action_flag')
@@ -25,3 +25,4 @@ class HistoryAdmin(admin.ModelAdmin):
     search_fields = ('name', 'description')
     list_filter = ('created_at',)
     ordering = ('-created_at',)
+'''
