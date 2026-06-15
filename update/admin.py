@@ -10,12 +10,6 @@ class FileAdmin(admin.ModelAdmin):
     search_fields = ('name', 'url', 'files')
 
 '''
-@admin.register(LogEntry)
-class LogEntryAdmin(admin.ModelAdmin):
-    list_display = ('action_time', 'user', 'content_type', 'object_repr', 'action_flag')
-    list_filter = ('action_flag', 'content_type')
-    search_fields = ('object_repr',)
-    readonly_fields = fields = ('action_time', 'user', 'content_type', 'object_id', 'object_repr', 'action_flag', 'change_message')
 
 @admin.register(History)
 class HistoryAdmin(admin.ModelAdmin):
