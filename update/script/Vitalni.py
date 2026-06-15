@@ -316,8 +316,8 @@ def get_vitalni_products_gerbor():
         i +=1
         cell = str(sheet[i][2].value)
         equal = re.search('Вітальні', cell)
-        print("Розділ вітальні знайдено ...")
         if equal:
+            print("Розділ вітальні знайдено ...")
             while True:
                 i +=1
                 try:
