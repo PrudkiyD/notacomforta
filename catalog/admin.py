@@ -109,7 +109,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_display_links = ['name',]
     inlines = [ProductImageInline, ProductPriceInline]
     readonly_fields =['get_img', 'slug', 'get_img_fields', "main_price"]  
-    autocomplete_fields = ['manufacturer', 'seria',]
+    autocomplete_fields = ['manufacturer', 'seria',"external_id", "external_seria", "external_category", "slug"]
     
     fieldsets = (
         ("Основна інформація", {
@@ -119,7 +119,7 @@ class ProductAdmin(admin.ModelAdmin):
             "fields": ("manufacturer", "seria", "category", "subcategory")
         }),
         ("Додатково", {
-            "fields": ("external_id", "external_seria", "external_category", 'slug')
+            "fields": ("external_id", "external_seria", "external_category", "slug")
         }),
     )
 
