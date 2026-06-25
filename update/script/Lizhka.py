@@ -988,7 +988,7 @@ def get_lizhka_product_svitmebliv():
     prod_id = 0
 
 
-    sheet = book.worksheets[5]
+    sheet = book.worksheets[4]
     for c in range(sheet.max_column):
         for r in range(sheet.max_row):
             r += 1

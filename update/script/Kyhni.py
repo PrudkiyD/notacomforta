@@ -276,6 +276,7 @@ def get_seria_komfortmebli():
 
 
 def get_seri_svitmebliv():
+    print('Кухні ...')
     src_url = File.objects.get(id=2).url
     source = requests.get(src_url, headers=HEADERS).text
     soup = BeautifulSoup(source, 'html.parser')
@@ -323,6 +324,7 @@ def get_seri_svitmebliv():
         cards.append({
             'id': p['id'],
             'name': name,
+            'prom':name,
             'des': str(des),
             'price':0
         })
@@ -340,26 +342,45 @@ def get_seri_svitmebliv():
         time.sleep(1)
 
     #Додаємо записи в базу
-    '''for item in cards:
+
+    stock = []
+
+    for item in cards:
         category = Category.objects.get(id=2)
         manufacturer = 2
-        external_category = 'kyhni'
+        external_category = 'get_seri_svitmebliv'
+
+        change_category(manufacturer, 'kyhni', item['prom'], external_category)
+
         try:
         #Оновлюємо ціну
             product = Product.objects.filter(
-                external_id=item['name'],
+                external_id=item['prom'],
                 manufacturer_id=manufacturer,
                 external_category=external_category
             )
 
             if product.exists():
+                price = ProductPrice.objects.filter(product=product.first()).first()
+
+                price.price = item['price']
+                price.save()
+
                 print('old', product[0].name)
+
+                history = History.objects.create(
+                            name=f"Оновлено товар",
+                            description=product[0].name
+                        )
+                history.save()
+
+                stock.append(product[0].id)
 
             #Додаємо новий товар
             else:
                 product = Product.objects.create(
                     published=True,  
-                    external_id=item['name'],  
+                    external_id=item['prom'],  
                     external_category=external_category,
                     manufacturer_id=manufacturer,  
                     name=item['name'],  
@@ -369,27 +390,33 @@ def get_seri_svitmebliv():
                 product.category.add(category)
 
                 prace_product = ProductPrice.objects.create(
-                    product=product,
-                    price=item['price'],
-                    is_main=True,
-                )
-
+                            product=product,
+                            price=item['price'],
+                            is_main=True,
+                        )
+                
                 prace_product.save()
 
                 main_img = True
 
                 for i in img_cards:
                     if i['id'] == item['id']:
+                        try:
+                            img_bytes = requests.get(i['url'], headers=HEADERS).content
+                            with open(product_images_path + i['img'], "wb") as f:
+                                f.write(img_bytes)
 
-                        images_product = ProductImage.objects.create(
-                            product=product,
-                            image="/media/product_images/" + str(i['img']),
-                            is_main=main_img
-                        )
-
-                        img_bytes = requests.get(i['url'], headers=HEADERS).content
-                        with open(product_images_path + i['img'], "wb") as f:
-                            f.write(img_bytes)
+                            images_product = ProductImage.objects.create(
+                                product=product,
+                                image=str(i['img']),
+                                is_main=main_img
+                            )
+                        except:
+                            images_product = ProductImage.objects.create(
+                                product=product,
+                                image=str(i['url']),
+                                is_main=main_img
+                            )
 
                         main_img = False
                         images_product.save()
@@ -398,7 +425,31 @@ def get_seri_svitmebliv():
 
                 print('new', item['name'])
 
+                history = History.objects.create(
+                            name=f"Додано товар",
+                            description=item['name']
+                        )
+                history.save()
+
+                stock.append(product.id)
+
         except Exception as ex:
             
-            print(ex)'''
+            print("Помилка при оновленню товара: ", ex)
             
+
+    #Видаляємо товар якого немає в наявності
+    products = Product.objects.filter(external_category=external_category)
+
+    for product in products:
+
+        if product.id not in stock:
+            product.delete()
+
+            history = History.objects.create(
+                            name=f"Видалино товар",
+                            description=product.name
+                        )
+            history.save()
+
+            print('Видалино: ', product.name)

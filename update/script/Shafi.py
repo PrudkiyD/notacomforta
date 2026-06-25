@@ -1182,7 +1182,7 @@ def get_shafi_mixmebli():
 def get_shafi_svitmebliv():
     path = File.objects.get(id=13).files
     book = openpyxl.load_workbook(filename=path)
-    sheet = book.worksheets[7]
+    sheet = book.worksheets[5]
 
     
     modul_cards = []
