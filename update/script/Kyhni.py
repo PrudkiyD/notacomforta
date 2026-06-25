@@ -161,7 +161,6 @@ def get_seria_komfortmebli():
     
 
     #Додаємо записи в базу
-
     stock = []
     external_category = 'get_seria_komfortmebli'
 
@@ -169,6 +168,7 @@ def get_seria_komfortmebli():
         category = Category.objects.get(id=2)
         manufacturer = 1
         
+
         change_category(manufacturer, 'kyhni', item['prom'], external_category)
 
         try:
