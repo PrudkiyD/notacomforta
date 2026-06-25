@@ -338,7 +338,6 @@ def get_kukhonni_kutochky_kompanit():
                             product=product,
                             price=0,
                             width=s['w'],
-                            height=s['h'],
                             depth=s['d'],
                             is_main=main_price,
                         )
