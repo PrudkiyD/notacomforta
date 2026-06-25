@@ -351,6 +351,9 @@ def get_matrasy_emm():
 
     #Оновлюємо ціни
     #Додаємо записи в базу
+
+    stock = []
+
     for item in cards:
         category = Category.objects.get(id=10)
         manufacturer = 15
@@ -385,6 +388,8 @@ def get_matrasy_emm():
                             description=product[0].name
                         )
                 history.save()
+
+                stock.append(product.id)
 
             #Додаємо новий товар
             else:
@@ -454,10 +459,27 @@ def get_matrasy_emm():
                         )
                 history.save()
 
+                stock.append(product.id)
+
         except Exception as ex:
             
             print(ex)
 
+    #Видаляємо товар якого немає в наявності
+    products = Product.objects.filter(external_category=external_category)
+
+    for product in products:
+
+        if product.id not in stock:
+            product.delete()
+
+            history = History.objects.create(
+                            name=f"Видалино товар",
+                            description=product.name
+                        )
+            history.save()
+
+            print('Видалино: ', product.name)
 
 
 def get_matrasy_eurosleep():
