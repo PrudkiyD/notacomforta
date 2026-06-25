@@ -292,6 +292,8 @@ def get_seri_svitmebliv():
 
         if pag not in pag_list:
             pag_list.append(pag)
+    
+    print(pag_list)
 
     #Збираємо посилання на товар
     print('Збираємо посилання на товар ...')
@@ -313,6 +315,8 @@ def get_seri_svitmebliv():
                     'id':len(check_list),
                     'link':link
                 })
+
+    print(prod_list)
 
     #Збираємо інформацію про товар
     print('Збираємо інформацію про товар ...')
