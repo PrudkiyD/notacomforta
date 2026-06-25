@@ -361,11 +361,6 @@ def get_seri_svitmebliv():
             )
 
             if product.exists():
-                price = ProductPrice.objects.filter(product=product.first()).first()
-
-                price.price = item['price']
-                price.save()
-
                 print('old', product[0].name)
 
                 history = History.objects.create(

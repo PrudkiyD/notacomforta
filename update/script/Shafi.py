@@ -1180,6 +1180,7 @@ def get_shafi_mixmebli():
     
             
 def get_shafi_svitmebliv():
+    print('Шафа ...')
     path = File.objects.get(id=13).files
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[5]
