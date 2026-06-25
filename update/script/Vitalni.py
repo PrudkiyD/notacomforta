@@ -425,6 +425,7 @@ def get_vitalni_products_gerbor():
 
         
 def get_vitalni_products_svitmebliv():
+    print('Вітальні ...')
     modul_cards = []
     product_cards = []
     modul_id = 0

@@ -602,6 +602,7 @@ def get_komody_tumby_lion():
 
 
 def get_komody_tumby_svitmebliv():
+    print('Комоди та тумби ...')
     path =File.objects.get(id=13).files
     print(path)
     book = openpyxl.load_workbook(filename=path)

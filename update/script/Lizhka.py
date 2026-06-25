@@ -979,6 +979,7 @@ def get_lizhka_product_richman():
 
 
 def get_lizhka_product_svitmebliv():
+    print('Ліжка ...')
     path = File.objects.get(id=13).files
     print(path)
     book = openpyxl.load_workbook(filename=path)

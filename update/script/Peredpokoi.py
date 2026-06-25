@@ -137,6 +137,7 @@ def get_peredpokoi_products_gerbor():
 
 
 def get_peredpokoi_products_svitmebliv():
+    print('Передпокій ...')
     modul_cards = []
     product_cards = []
     modul_id = 0

@@ -9,6 +9,7 @@ import re
 
 
 def get_spalni_products_svitmebliv():
+    print('Спальні ...')
     modul_cards = []
     product_cards = []
     modul_id = 0

@@ -7,6 +7,7 @@ import re
 
 
 def get_dytyachi_products_svitmebliv():
+    print('Дитячі ...')
     modul_cards = []
     product_cards = []
     modul_id = 0

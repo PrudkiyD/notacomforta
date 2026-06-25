@@ -1404,6 +1404,7 @@ def get_shafi_svitmebliv():
 
 
 def get_stelazhi_svitmebliv():
+    print('Шафа розпашні ...')
     path = File.objects.get(id=13).files
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[0]
