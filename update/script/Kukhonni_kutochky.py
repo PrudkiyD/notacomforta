@@ -319,7 +319,7 @@ def get_kukhonni_kutochky_kompanit():
             #Додаємо новий товар
             else:
                 product = Product.objects.create(
-                    published=True,  
+                    published=False,  
                     external_id=item['prom'],  
                     external_category=external_category,
                     manufacturer_id=manufacturer,  
