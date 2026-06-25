@@ -284,6 +284,7 @@ def get_seri_svitmebliv():
     img_cards = []
 
     #Збираєм пагінацію
+    print('Збираєм пагінацію ...')
     items = soup.find_all('a', class_='pagination__link')
     pag_list = [src_url,]
     for i in items:
@@ -293,6 +294,7 @@ def get_seri_svitmebliv():
             pag_list.append(pag)
 
     #Збираємо посилання на товар
+    print('Збираємо посилання на товар ...')
     prod_list = []
     check_list =[]
     for p in pag_list:
@@ -313,7 +315,9 @@ def get_seri_svitmebliv():
                 })
 
     #Збираємо інформацію про товар
+    print('Збираємо інформацію про товар ...')
     for p in prod_list:
+        print(p['link'])
         source = requests.get(p['link'], headers=HEADERS).text
         soup = BeautifulSoup(source, 'html.parser')
 
@@ -342,7 +346,7 @@ def get_seri_svitmebliv():
         time.sleep(1)
 
     #Додаємо записи в базу
-
+    print('Додаємо записи в базу ...')
     stock = []
     external_category = 'get_seri_svitmebliv'
 
