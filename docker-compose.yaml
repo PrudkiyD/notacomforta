@@ -4,6 +4,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: notacomforta_app
+    volumes:
+      - .:/app
     environment:
       - PYTHONUNBUFFERED=1
     env_file:
