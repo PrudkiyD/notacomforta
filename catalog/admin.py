@@ -108,8 +108,8 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ['id', 'name', 'description', 'external_id']
     list_display_links = ['name',]
     inlines = [ProductImageInline, ProductPriceInline]
-    readonly_fields =['get_img', 'slug', 'get_img_fields', "main_price"]  
-    autocomplete_fields = ['manufacturer', 'seria',"external_id", "external_seria", "external_category", "slug"]
+    readonly_fields =['get_img', 'slug', 'get_img_fields', "main_price", "external_id", "external_seria", "external_category", "slug"]  
+    autocomplete_fields = ['manufacturer', 'seria']
     
     fieldsets = (
         ("Основна інформація", {
