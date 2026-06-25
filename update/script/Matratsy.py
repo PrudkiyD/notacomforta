@@ -353,12 +353,11 @@ def get_matrasy_emm():
     #Додаємо записи в базу
 
     stock = []
-    external_category = 'get_matrasy_emm'
 
     for item in cards:
         category = Category.objects.get(id=10)
         manufacturer = 15
-        
+        external_category = 'get_matrasy_emm'
         change_category(manufacturer, 'matrasy', item['prom'], external_category)
 
         try:
@@ -392,7 +391,7 @@ def get_matrasy_emm():
                         )
                 history.save()
 
-                stock.append(product.id)
+                stock.append(product[0].id)
 
             #Додаємо новий товар
             else:
