@@ -161,13 +161,13 @@ def get_seria_komfortmebli():
     
 
     #Додаємо записи в базу
+
     stock = []
-    external_category = 'get_seria_komfortmebli'
 
     for item in cards:
         category = Category.objects.get(id=2)
         manufacturer = 1
-        
+        external_category = 'get_seria_komfortmebli'
 
         change_category(manufacturer, 'kyhni', item['prom'], external_category)
 
@@ -344,11 +344,12 @@ def get_seri_svitmebliv():
     #Додаємо записи в базу
 
     stock = []
+    external_category = 'get_seri_svitmebliv'
 
     for item in cards:
         category = Category.objects.get(id=2)
         manufacturer = 2
-        external_category = 'get_seri_svitmebliv'
+        
 
         change_category(manufacturer, 'kyhni', item['prom'], external_category)
 
