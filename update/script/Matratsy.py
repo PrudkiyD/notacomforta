@@ -353,11 +353,14 @@ def get_matrasy_emm():
     #Додаємо записи в базу
 
     stock = []
+    external_category = 'get_matrasy_emm'
 
     for item in cards:
         category = Category.objects.get(id=10)
         manufacturer = 15
-        external_category = 'matrasy'
+        
+        change_category(manufacturer, 'matrasy', item['prom'], external_category)
+
         try:
         #Оновлюємо ціну
             product = Product.objects.filter(
