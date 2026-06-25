@@ -13,6 +13,8 @@ def catalog(request):
     pages = Page.objects.filter(published=True)
     title = "Всі категорії"
 
+    Product.objects.filter( manufacturer_id=19, external_category='get_kukhonni_kutochky_kompanit')
+
     return render(request, 'all-categorys.html', {
         'title': title,
         'categorys': categorys,
