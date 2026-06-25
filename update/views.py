@@ -164,8 +164,10 @@ def update(request):
 
             
             if manufacturer == 18:
-                Lizhka.get_lizhka_kompanit() #Не перевірено
+                Kukhonni_kutochky.get_kukhonni_kutochky_kompanit()
+                Lizhka.get_lizhka_kompanit()
                 Komody_tumby.get_komody_tumby_kompanit()
+                
 
                  
 
