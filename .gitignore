@@ -32,6 +32,7 @@ staticfiles/
 archive/
 postgres_data/
 dump.json
+backup_data/
 
 
 .env

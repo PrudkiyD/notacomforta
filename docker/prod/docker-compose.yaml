@@ -21,7 +21,8 @@ services:
     command: >
       gunicorn notacomforta.wsgi:application
       --bind 0.0.0.0:8000 --workers 3 --timeout 300
-    depends_on: db
+    depends_on: 
+      - db
       
   nginx:
     image: nginx:latest
