@@ -103,7 +103,7 @@ class ProductPriceInline(admin.StackedInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['id', 'get_img', 'name', 'manufacturer', 'get_categories', 'get_subcategories', 'external_category', 'group', 'main_price']
+    list_display = ['id', 'get_img', 'name', 'manufacturer', 'get_categories', 'get_subcategories', 'group', 'main_price']
     list_filter = ['published', 'category', 'manufacturer',]
     search_fields = ['id', 'name', 'description', 'external_id']
     list_display_links = ['name',]
