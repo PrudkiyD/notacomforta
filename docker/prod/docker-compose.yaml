@@ -10,7 +10,7 @@ services:
   app:
     build:
       context: ../..
-      dockerfile: docker/dev/Dockerfile
+      dockerfile: docker/prod/Dockerfile
     container_name: notacomforta_app
     volumes:
       - ../../:/app
@@ -21,15 +21,19 @@ services:
     command: >
       gunicorn notacomforta.wsgi:application
       --bind 0.0.0.0:8000 --workers 3 --timeout 300
+    depends_on: db
       
   nginx:
     image: nginx:latest
     container_name: nginx
     ports:
-      - "8080:80"
-    volumes:
+      - "80:80"
+      - "443:443"
+    volumes: 
+      - ./nginx.default.conf:/etc/nginx/conf.d/default.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - ../../static:/app/static
       - ../../staticfiles:/app/staticfiles
       - ../../media:/app/media
-      - ./nginx.default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - app

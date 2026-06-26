@@ -30,6 +30,8 @@ notadb.sqlite3
 media/
 staticfiles/
 archive/
+postgres_data/
+dump.json
 
 
 .env

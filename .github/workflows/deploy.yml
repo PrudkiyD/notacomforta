@@ -18,6 +18,8 @@ jobs:
           script: |
             cd /var/www/notacomforta
             git pull origin main
+            cd /var/www/notacomforta/docker/prod
             docker compose up -d --build
+            docker exec notacomforta_app python manage.py makemigrations --noinput
             docker exec notacomforta_app python manage.py migrate --noinput
             docker exec notacomforta_app python manage.py collectstatic --noinput

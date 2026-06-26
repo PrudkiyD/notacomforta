@@ -36,6 +36,7 @@ MIDDLEWARE = [
 
 ]
 
+
 ROOT_URLCONF = 'notacomforta.urls'
 
 TEMPLATES = [
@@ -55,7 +56,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'notacomforta.wsgi.application'
-CSRF_TRUSTED_ORIGINS = ['https://*.notacomforta.pl.ua/']
+CSRF_TRUSTED_ORIGINS = ['https://*.notacomforta.pl.ua',
+                        'http://127.0.0.1:8080',
+                        'http://localhost:8080',]
 
 
 DATABASES = {
@@ -64,6 +67,18 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'notadb.sqlite3'),
     }
 }
+'''
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('POSTGRES_DB'),
+        'USER': config('POSTGRES_USER'),
+        'PASSWORD': config('POSTGRES_PASSWORD'),
+        'HOST': config('DB_HOST', default='db'),
+        'PORT': config('DB_PORT', default='5432'),
+    }
+}
+'''
 
 
 
