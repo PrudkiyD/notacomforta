@@ -17,6 +17,7 @@ jobs:
           key: ${{ secrets.VPS_KEY }}
           script: |
             cd /var/www/notacomforta
+            git reset --hard
             git pull origin main
             cd /var/www/notacomforta/docker/prod
             docker compose down
