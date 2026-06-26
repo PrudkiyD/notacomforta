@@ -9,6 +9,8 @@ from page.models import Page, Element
 from catalog.models import Category
 from django.shortcuts import redirect
 import random
+import requests
+import os
 
 
 def get_cart(cart):
@@ -194,6 +196,44 @@ def successful(request):
 
             # Видалення кошика
             cart.delete()
+
+            try:
+                admins = os.getenv('TG_ID_ADMIN').split(',')
+
+                text_ms = (f"📦 <b>Номер замовлення:</b> {order.order_id}\n"
+                        f"👤 <b>Прізвище та ім'я:</b> {order.customer}\n"
+                        f"📞 <b>Телефон:</b> {order.phone}\n"
+                        f"💬 <b>Коментар:</b> {order.coment}\n"
+                        f"💰 <b>Сума:</b> {order.total} грн")
+
+                for chat_id in admins:
+
+                    requests.post(
+                        f"https://api.telegram.org/bot{os.getenv('TELEGRAM_TOKEN')}/sendMessage",
+                        json={
+                            'chat_id': chat_id.strip(),
+                            'text': text_ms,
+                            'parse_mode': 'HTML',
+                            'reply_markup': {
+                                'inline_keyboard': [
+                                    [
+                                        {
+                                            'text': '🔎 Переглянути на сайті',
+                                            'url': f'https://www.notacomforta.pl.ua/order/track?number={order.order_id}'
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            'text': '🔧 Адмін панель',
+                                            'url': f'https://www.notacomforta.pl.ua/admin/order/order/{order.order_id}/change/'
+                                        }
+                                    ]
+                                ]
+                            }
+                        }
+                    )
+            except:
+                pass
 
             return redirect(f'/order/successful/{order.id}')
     except Exception as ex:

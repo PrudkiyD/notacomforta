@@ -11,21 +11,7 @@ services:
     env_file:
       - .env
     command: gunicorn notacomforta.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 300
-
-  bot:
-    build:
-      context: .
-    container_name: notacomforta_bot
-    volumes:
-      - .:/app
-    environment:
-      - PYTHONUNBUFFERED=1
-    env_file:
-      - .env
-    command: python tg.py
-    depends_on:
-      - app
-
+    
   nginx:
     image: nginx:latest
     container_name: nginx 
