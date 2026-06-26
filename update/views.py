@@ -9,7 +9,7 @@ import json
 from .script import Kyhni, Shafi, Myakimebli, Lizhka, \
                     Matratsy, Komody_tumby, Peredpokoi, Vitalni, Spalni, \
                     Dytyachi, Matrolux_module, Stoly, Pcstoly, \
-                    Kukhonni_kutochky, Stiltsi_taburety
+                    Kukhonni_kutochky, Stiltsi_taburety, RichmanUpdate
 
 def update(request):
     msg = False
@@ -81,8 +81,7 @@ def update(request):
 
 
             if manufacturer == 6:
-                Myakimebli.get_products_richman()
-                Lizhka.get_lizhka_product_richman()
+                RichmanUpdate.get_products_richman()
 
                  
 
