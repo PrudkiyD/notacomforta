@@ -1,18 +1,21 @@
 from catalog.models import Product, ProductImage, ProductPrice, Category, Subcategory
 from .Tools import HEADERS, change_category, change_category_modul, file_path, product_images_path, num_check
 import xml.etree.ElementTree as ET
-from update.models import File, History
+from update.models import File
 from bs4 import BeautifulSoup
 import requests
 import openpyxl
 import re
 import time
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def get_kukhonni_kutochky_yudin():
     path = File.objects.get(id=25).files
     
-    print(path)
+    logger.info(path)
 
     book = openpyxl.load_workbook(filename=path)
     sheet_name = ["КУХОННІ",]
@@ -55,7 +58,7 @@ def get_kukhonni_kutochky_yudin():
                             'name': name,
                         })
                     
-                    print((
+                    logger.info((
                         f'{prod_id}: {prom}\n'
                         f'Назва: {name}\n'
                     ))
@@ -110,13 +113,9 @@ def get_kukhonni_kutochky_yudin():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
                 stock.append(product[0].id)
 
@@ -151,19 +150,15 @@ def get_kukhonni_kutochky_yudin():
 
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
                 stock.append(product.id)
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
     
     #Видаляємо товар якого немає в наявності
     products = Product.objects.filter(external_category=external_category)
@@ -173,13 +168,9 @@ def get_kukhonni_kutochky_yudin():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)
 
 
 def get_kukhonni_kutochky_kompanit():
@@ -240,8 +231,8 @@ def get_kukhonni_kutochky_kompanit():
         size = ['', '']
 
 
-        print(url['url'])
-        print(name)
+        logger.info(url['url'])
+        logger.info(name)
 
         for i in prop_list:
             val = i.get_text()
@@ -274,7 +265,7 @@ def get_kukhonni_kutochky_kompanit():
 
         for i in img_list:
             img = i.get('data-mfp-src')
-            print(img)
+            logger.info(img)
             img_name = img.split('/')[len(img.split('/')) - 1]
 
             img_cards.append({
@@ -283,8 +274,8 @@ def get_kukhonni_kutochky_kompanit():
                 'url': img
             })
 
-        print(size)
-        print('-------------------------------')
+        logger.info(size)
+        logger.info('-------------------------------')
 
     #Додаємо записи в базу
     
@@ -306,13 +297,9 @@ def get_kukhonni_kutochky_kompanit():
             )
 
             if product.exists():
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
                 stock.append(product[0].id)
 
@@ -372,19 +359,15 @@ def get_kukhonni_kutochky_kompanit():
 
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
                 stock.append(product.id)
 
         except Exception as ex:
             
-            print("Помилка при оновленню товара: ", ex)
+            logger.info("Помилка при оновленню товара: ", ex)
 
     
     #Видаляємо товар якого немає в наявності
@@ -395,10 +378,6 @@ def get_kukhonni_kutochky_kompanit():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)

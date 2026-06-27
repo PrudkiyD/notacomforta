@@ -1,16 +1,19 @@
 from catalog.models import Product, ProductImage, ProductPrice, Category, Subcategory
 from .Tools import HEADERS, change_category, change_category_modul, file_path, product_images_path, num_check
 import xml.etree.ElementTree as ET
-from update.models import File, History
+from update.models import File
 from bs4 import BeautifulSoup
 import requests
 import openpyxl
 import re
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def get_stiltsi_taburety_modul_lux():
     path = File.objects.get(id=27).files
-    print(path)
+    logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[0]
     prod_id = 0
@@ -61,9 +64,9 @@ def get_stiltsi_taburety_modul_lux():
 
                     prod_id += 1
                     
-                    print('-'*50)
-                    print(prom)
-                    print(prod_id, name, size, price)
+                    logger.info('-'*50)
+                    logger.info(prom)
+                    logger.info(prod_id, name, size, price)
 
     
     #Додаємо записи в базу
@@ -95,13 +98,9 @@ def get_stiltsi_taburety_modul_lux():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
             #Додаємо новий товар
             else:
@@ -136,14 +135,10 @@ def get_stiltsi_taburety_modul_lux():
                         main_price = False
 
                 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)

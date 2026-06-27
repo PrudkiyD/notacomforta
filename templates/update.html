@@ -42,10 +42,10 @@
                 
                 
                 <button type="submit">Завантажити</button>
-                <a href="/admin/">Адміністрування</a>
-                <a href="/">Дивитися сайт</a>
+                <a class="url" href="/admin/">Адміністрування</a>
+                <a class="url" href="/">Дивитися сайт</a>
                 {% if msg %}
-                    <div class="msg"><p>{{ msg }}</p></div>
+                    <div class="msg"><p>{{ msg | safe }}</p></div>
                 
                 {% endif%}
             </form>

@@ -1,17 +1,20 @@
 from catalog.models import Product, ProductImage, ProductPrice, Category, Subcategory
 from .Tools import HEADERS, change_category, change_category_modul, file_path, product_images_path, trans, num_check
 import xml.etree.ElementTree as ET
-from update.models import File, History
+from update.models import File
 from bs4 import BeautifulSoup
 import requests
 import time
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def get_matrasy_matrolux():
-    print('Start ...')
+    logger.info('Start ...')
     req = requests.get(File.objects.get(id=18).url,headers=HEADERS)  
     src = req.text
-    print(src[:500])
+    logger.info(src[:500])
 
     soup = BeautifulSoup(src, 'xml')
     item = soup.find_all('offer')
@@ -32,7 +35,7 @@ def get_matrasy_matrolux():
             offer_list.append(offer_id)
             picture = i.find_all('picture')
             img_list = []
-            print(len(offer_list), '-->', name_list[0], '-->', prom)
+            logger.info(len(offer_list), '-->', name_list[0], '-->', prom)
 
             for i in picture:
                 img_list.append(i.get_text())
@@ -141,13 +144,9 @@ def get_matrasy_matrolux():
                         main_price = False
                 
 
-                print('old', product.name)
+                logger.info('old', product.name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product.name
-                        )
-                history.save()
+                
                 
                 stock.append(product.id)
 
@@ -214,19 +213,15 @@ def get_matrasy_matrolux():
 
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
                 stock.append(product.id)
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
 
 
     #Видаляємо товар якого немає в наявності
@@ -237,19 +232,15 @@ def get_matrasy_matrolux():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)
 
 def get_matrasy_emm():
-    print('Start...')
+    logger.info('Start...')
 
     src = requests.get(File.objects.get(id=19).url,headers=HEADERS).text
-    print('Get src ---///')
+    logger.info('Get src ---///')
 
     soup = BeautifulSoup(src, 'xml')
     item = soup.find_all('offer')
@@ -284,7 +275,7 @@ def get_matrasy_emm():
                     'url': img
                 })
 
-                #print(img_name)
+                #logger.info(img_name)
             
 
             cards.append({
@@ -294,7 +285,7 @@ def get_matrasy_emm():
                 'des': desc_text,
             })
 
-            #print(f"{prom} -> {name_list[0]}")
+            #logger.info(f"{prom} -> {name_list[0]}")
 
 
     for i in item:
@@ -347,7 +338,7 @@ def get_matrasy_emm():
                 'sale':sale
             })
 
-        #print(offer_id, '-->', option, size, price, oldprice)
+        #logger.info(offer_id, '-->', option, size, price, oldprice)
 
     #Оновлюємо ціни
     #Додаємо записи в базу
@@ -383,13 +374,9 @@ def get_matrasy_emm():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
                 stock.append(product[0].id)
 
@@ -453,19 +440,15 @@ def get_matrasy_emm():
 
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
                 stock.append(product.id)
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
 
     #Видаляємо товар якого немає в наявності
     products = Product.objects.filter(external_category=external_category)
@@ -475,13 +458,9 @@ def get_matrasy_emm():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)
 
 
 def get_matrasy_eurosleep():
@@ -503,7 +482,7 @@ def get_matrasy_eurosleep():
     for p in pagination:
         pag = p.get('href')
         if pag not in pag_list:
-            print(pag)
+            logger.info(pag)
             pag_list.append(pag)
 
 
@@ -514,7 +493,7 @@ def get_matrasy_eurosleep():
     for p in pagination:
         pag = p.get('href')
         if pag not in pag_list:
-            print(pag)
+            logger.info(pag)
             pag_list.append(pag)
 
     # Забераємо посилання на товар
@@ -533,7 +512,7 @@ def get_matrasy_eurosleep():
                     'num': len(prod_link),
                     'url': link
                 })
-                print(len(prod_link) - 1, ':', link)
+                logger.info(len(prod_link) - 1, ':', link)
 
         time.sleep(3)
 
@@ -553,7 +532,7 @@ def get_matrasy_eurosleep():
 
         prom = url['url']
 
-        print(url['num'], name)
+        logger.info(url['num'], name)
 
         cards.append({
             'id': url['num'],
@@ -586,7 +565,7 @@ def get_matrasy_eurosleep():
                 except:
                     pass
 
-                print(url['num'], size, price)
+                logger.info(url['num'], size, price)
         
         for i in img_list:
             img_name = i.get('href')
@@ -596,9 +575,9 @@ def get_matrasy_eurosleep():
                 'img': str(img_name).split('/')[-1],
                 'url': img_name
             })
-            print(img_name)
+            logger.info(img_name)
 
-        print('----------------------------------------------------')
+        logger.info('----------------------------------------------------')
         time.sleep(1)
 
     #Оновлюємо ціни
@@ -628,13 +607,9 @@ def get_matrasy_eurosleep():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
             #Додаємо новий товар
             else:
@@ -694,14 +669,10 @@ def get_matrasy_eurosleep():
 
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)

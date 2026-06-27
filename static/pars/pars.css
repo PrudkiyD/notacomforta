@@ -105,7 +105,7 @@ body {
     color: #FFFFFF;
 }
 
-.conteiner a{
+.conteiner .url{
     background-color: #FFFFFF;
     border: 1px solid #222222;
     border-radius: 8px;
@@ -143,4 +143,8 @@ body {
 .msg{
     font-weight: 300;
     font-size: 13px;
+}
+
+.msg-url{
+
 }

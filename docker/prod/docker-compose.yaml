@@ -12,6 +12,8 @@ services:
       context: ../..
       dockerfile: docker/prod/Dockerfile
     container_name: notacomforta_app
+    volumes:
+      - ../../media:/app/media
     environment:
       - PYTHONUNBUFFERED=1
     env_file:

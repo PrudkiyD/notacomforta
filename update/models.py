@@ -14,12 +14,24 @@ class File(models.Model):
         verbose_name = "Прайс"
         verbose_name_plural = "Прайси"
 
+class TaskExecution(models.Model):
+    class Status(models.TextChoices):
+        PENDING = "PENDING", "В черзі"
+        STARTED = "STARTED", "В процесі"
+        SUCCESS = "SUCCESS", "Завершено"
+        FAILED = "FAILED", "Сталася помилка"
 
-class History(models.Model):
-    name = models.CharField(max_length=255, verbose_name="Назва")
-    description = RichTextField(blank=True, verbose_name="Опис")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата створення")
+    name = models.CharField(max_length=255)
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
+    result = models.TextField(null=True, blank=True)
+    error = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    started_at = models.DateTimeField(null=True, blank=True)
+    finished_at = models.DateTimeField(null=True, blank=True)
 
+    def __str__(self):
+        return f"{self.name} ({self.status})"
+    
     class Meta:
-        verbose_name = "Історія"
-        verbose_name_plural = "Історія"
+        verbose_name = "Результат оновлення"
+        verbose_name_plural = "Результати оновлення"

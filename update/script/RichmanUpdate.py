@@ -1,22 +1,19 @@
 from catalog.models import Product, ProductImage, ProductPrice, Category, Subcategory
 from .Tools import HEADERS, change_category, change_category_modul, file_path, product_images_path, num_check
-import xml.etree.ElementTree as ET
-from update.models import File, History
-from bs4 import BeautifulSoup
-import random
-import string
-import requests
+from update.models import File
 import openpyxl
-import time
-import re
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 
 def get_products_richman():
-    paths = [File.objects.get(id=8).files, File.objects.get(id=26).files]
+    paths = [File.objects.get(id=8).files,]
     
     for path in paths:
 
-        print(path)
+        logger.info(path)
         book = openpyxl.load_workbook(filename=path)
         sheet = book["Ціни"]
 
@@ -86,9 +83,10 @@ def get_products_richman():
 
 
 
-                    print(f"{art} {name} {group}")
+                    logger.info(f"{art} {name} {group}")
 
 
+    #Оновлюємо ціни
     #Додаємо записи в базу
 
     stock = []
@@ -106,18 +104,21 @@ def get_products_richman():
             )
 
             if product.exists():
-                price = ProductPrice.objects.filter(product=product.first()).first()
+                price = ProductPrice.objects.filter(product=product.first())
+                index = 0
 
-                price.price = item['price']
-                price.save()
+                for s in size_cards:
+                    if s['id'] == item['id']:
+                        curent_price = price[index]
 
-                print('old', product[0].name)
+                        curent_price.price = s['price']
+                        curent_price.save()
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                        index += 1
+
+                logger.info('old', product[0].name)
+
+                
 
                 stock.append(product[0].id)
 
@@ -134,29 +135,35 @@ def get_products_richman():
 
                 product.category.add(Category.objects.get(id=item['category']))
 
-                prace_product = ProductPrice.objects.create(
+                main_price = True
+
+                for s in size_cards:
+                    if s['id'] == item['id']:
+
+                        prace_product = ProductPrice.objects.create(
                             product=product,
-                            price=item['price'],
-                            is_main=True,
+                            published=False,
+                            info=s['info'],
+                            setup=s['setup'],
+                            price=s['price'],
+                            is_main=main_price,
                         )
-                
-                prace_product.save()
+
+                        prace_product.save()
+                        
+                        main_price = False
+
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
                 stock.append(product.id)
 
         except Exception as ex:
             
-            print("Помилка при оновленню товара: ", ex)
-            
+            logger.info(ex)
 
     #Видаляємо товар якого немає в наявності
     products = Product.objects.filter(external_category=external_category)
@@ -166,10 +173,6 @@ def get_products_richman():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)

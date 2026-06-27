@@ -1,7 +1,7 @@
 from catalog.models import Product, ProductImage, ProductPrice, Category, Subcategory
 from .Tools import HEADERS, change_category, change_category_modul, file_path, product_images_path, num_check
 import xml.etree.ElementTree as ET
-from update.models import File, History
+from update.models import File
 from bs4 import BeautifulSoup
 import random
 import string
@@ -9,13 +9,15 @@ import requests
 import openpyxl
 import time
 import re
+import logging
 
+logger = logging.getLogger(__name__)
 
 
 
 def get_lizhka_komfortmebli():
     path = File.objects.get(id=10).files
-    print(path)
+    logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[0]
     cards = []
@@ -57,10 +59,10 @@ def get_lizhka_komfortmebli():
                 'price':price
             })
 
-            print(prom, '-->', name, '->', price)
+            logger.info(prom, '-->', name, '->', price)
 
             for img in img_list:
-                print(f"img---{img}---///")
+                logger.info(f"img---{img}---///")
                 
                 try:
                     img_name = img.split('/')[len(img.split('/')) - 1]
@@ -71,9 +73,9 @@ def get_lizhka_komfortmebli():
                     })
 
                 except Exception as ex:
-                    print(f'///-------{ex}---------///')
+                    logger.info(f'///-------{ex}---------///')
             
-            print('-------------------------')
+            logger.info('-------------------------')
 
     #Додаємо записи в базу
 
@@ -108,13 +110,9 @@ def get_lizhka_komfortmebli():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
                 stock.append(product[0].id)
 
@@ -175,19 +173,15 @@ def get_lizhka_komfortmebli():
 
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
                 stock.append(product.id)
 
         except Exception as ex:
             
-            print("Помилка при оновленню товара: ", ex)
+            logger.info("Помилка при оновленню товара: ", ex)
 
     #Видаляємо товар якого немає в наявності
     products = Product.objects.filter(external_category=external_category)
@@ -197,13 +191,9 @@ def get_lizhka_komfortmebli():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)
 
 
 def get_lizhka_products_matrolux():
@@ -211,10 +201,10 @@ def get_lizhka_products_matrolux():
     cards = []
     size_cards = []
 
-    print('Start ...')
+    logger.info('Start ...')
     req = requests.get(File.objects.get(id=4).url, headers=HEADERS)  
     src = req.text
-    print('Get src ---///')
+    logger.info('Get src ---///')
     soup = BeautifulSoup(src, 'xml')
     item = soup.find_all('entry')
 
@@ -245,8 +235,8 @@ def get_lizhka_products_matrolux():
             
             if  product_type == "Ліжка":
                 if len(str(product_id).split('-')) == 1 or len(str(product_id).split('-')) == 2:
-                    print(title)
-                    print('-'*50)
+                    logger.info(title)
+                    logger.info('-'*50)
                     for cat_num in range(50):
 
                         if cat_num == 0:
@@ -315,15 +305,15 @@ def get_lizhka_products_matrolux():
                             })
 
                         except Exception as ex:
-                            print(f'///-------{ex}---------///')
+                            logger.info(f'///-------{ex}---------///')
 
                             
                     
 
         except Exception as ex:
-            print('-'*50)
-            print(ex)
-            print('-'*50)
+            logger.info('-'*50)
+            logger.info(ex)
+            logger.info('-'*50)
 
     #Додаємо записи в базу
     for item in cards:
@@ -355,13 +345,9 @@ def get_lizhka_products_matrolux():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
             #Додаємо новий товар
             else:
@@ -422,17 +408,13 @@ def get_lizhka_products_matrolux():
 
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
         except Exception as ex:
             
-            print("Помилка при оновленню товара: ", ex)
+            logger.info("Помилка при оновленню товара: ", ex)
             
 
 def get_lizhka_product_arbordrev():
@@ -475,7 +457,7 @@ def get_lizhka_product_arbordrev():
                     'num': len(links_list),
                     'url': link
                 })
-                print(len(links_list)-1, link)
+                logger.info(len(links_list)-1, link)
 
 
     for url in links_list:
@@ -490,7 +472,7 @@ def get_lizhka_product_arbordrev():
         chek_list = soup.find('table', class_='variations').find('tbody').find_all('tr')
         img_list = soup.find('div', class_='product-images-inner').find_all('img')
 
-        print(url['num'], name, url['url'])
+        logger.info(url['num'], name, url['url'])
 
         cards.append({
             'id': url['num'],
@@ -577,9 +559,9 @@ def get_lizhka_product_arbordrev():
 
 
 
-        print(material, gear, size, price)
+        logger.info(material, gear, size, price)
                     
-        print('-----------------------------')
+        logger.info('-----------------------------')
 
     
     #Додаємо записи в базу
@@ -610,7 +592,7 @@ def get_lizhka_product_arbordrev():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
             #Додаємо новий товар
             else:
@@ -664,11 +646,11 @@ def get_lizhka_product_arbordrev():
 
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
             
 
 def get_lizhka_product_everest():
@@ -730,8 +712,8 @@ def get_lizhka_product_everest():
         size = size_list[len(size_list) - 1]
         size = size.split('х')
 
-        print(url['num'], url['url'], name)
-        print(size)
+        logger.info(url['num'], url['url'], name)
+        logger.info(size)
 
         for i in img_list:
             img = i.get('href')
@@ -802,7 +784,7 @@ def get_lizhka_product_everest():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
             #Додаємо новий товар
             else:
@@ -855,17 +837,17 @@ def get_lizhka_product_everest():
 
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
 
 
 def get_lizhka_product_svitmebliv():
-    print('Ліжка ...')
+    logger.info('Ліжка ...')
     path = File.objects.get(id=13).files
-    print(path)
+    logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     
     cards = []
@@ -1001,13 +983,9 @@ def get_lizhka_product_svitmebliv():
                             prace_product.save()
 
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
                 stock.append(product[0].id)
             
@@ -1041,19 +1019,15 @@ def get_lizhka_product_svitmebliv():
 
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
                 stock.append(product.id)
                 
         except Exception as ex:
             
-            print("Помилка при оновленню товара: ", ex)
+            logger.info("Помилка при оновленню товара: ", ex)
 
     #Видаляємо товар якого немає в наявності
     products = Product.objects.filter(external_category=external_category)
@@ -1063,20 +1037,16 @@ def get_lizhka_product_svitmebliv():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)
 
 
 def get_lizhka_product_lion():
     pass
     '''
     path =File.objects.get().files
-    print(path)
+    logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[2]
     cards = []
@@ -1122,7 +1092,7 @@ def get_lizhka_product_lion():
                             'price': price,
                         })
 
-                        print(name.replace('  ', ''), size, price)
+                        logger.info(name.replace('  ', ''), size, price)
                     except:
                         pass
 
@@ -1165,7 +1135,7 @@ def get_lizhka_product_lion():
                             'price': price,
                         })
 
-                        print(name.replace('  ', ''), size, price)
+                        logger.info(name.replace('  ', ''), size, price)
                     except:
                         pass'
     '''
@@ -1173,7 +1143,7 @@ def get_lizhka_product_lion():
 
 def get_lizhka_product_olimp():
     path = File.objects.get(id=14).files
-    print(path)
+    logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[0]
     cards = []
@@ -1210,7 +1180,7 @@ def get_lizhka_product_olimp():
                         'price': price,
                     })
 
-                    print(prod_id, size, price)
+                    logger.info(prod_id, size, price)
 
                 else:
                     option = size[0]
@@ -1235,7 +1205,7 @@ def get_lizhka_product_olimp():
                                 'price': price,
                             })
 
-                            print(prod_id, size, option, price)
+                            logger.info(prod_id, size, option, price)
                         else:
                             break
 
@@ -1263,7 +1233,7 @@ def get_lizhka_product_olimp():
                     'price': price,
                 })
 
-                print(prod_id, name, size, price)
+                logger.info(prod_id, name, size, price)
 
         except:
             pass
@@ -1297,7 +1267,7 @@ def get_lizhka_product_olimp():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
             #Додаємо новий товар
             else:
@@ -1332,16 +1302,16 @@ def get_lizhka_product_olimp():
 
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
 
 
 def get_lizhka_product_neman():
     path = File.objects.get(id=15).files
-    print(path)
+    logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[0]
     cards = []
@@ -1377,10 +1347,10 @@ def get_lizhka_product_neman():
                 'des_ru': des_ru,
             })
 
-            print(prod_id, name)
-            print(size)
+            logger.info(prod_id, name)
+            logger.info(size)
 
-            print(price)
+            logger.info(price)
             
 
             try:
@@ -1415,11 +1385,11 @@ def get_lizhka_product_neman():
                         'img': img_name,
                         'url': img
                     })
-                    print(img_name)
+                    logger.info(img_name)
                 except:
                     pass
             
-            print('-------------------------------')
+            logger.info('-------------------------------')
 
 
 def get_lizhka_product_tenero():
@@ -1456,13 +1426,13 @@ def get_lizhka_product_tenero():
         soup = BeautifulSoup(source, 'html.parser')
     
         prom = url['url']
-        print('-->', url['url'])
+        logger.info('-->', url['url'])
 
         name = soup.find('h1').get_text() if soup.find('h1') else url['title']
         price = str(url['price']).replace('.00 UAH', '')
         desc_text = soup.find("div", attrs={"data-qaid": "product_description"})
 
-        print(name)
+        logger.info(name)
         
         cards.append({
             'id': url['num'],
@@ -1490,11 +1460,11 @@ def get_lizhka_product_tenero():
                             })
 
         
-        print(url['num'], name, price)
+        logger.info(url['num'], name, price)
 
         
         
-        print('-------------------------------------')
+        logger.info('-------------------------------------')
     
     #Додаємо записи в базу
     for item in cards:
@@ -1531,13 +1501,9 @@ def get_lizhka_product_tenero():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
             #Додаємо новий товар
             else:
@@ -1585,31 +1551,27 @@ def get_lizhka_product_tenero():
                                 image=str(i['img']),
                                 is_main=main_img
                             )
-                            print(f"Завантажено: {i['url']}")
+                            logger.info(f"Завантажено: {i['url']}")
                         except Exception as ex:
                             images_product = ProductImage.objects.create(
                                 product=product,
                                 image=str(i['url']),
                                 is_main=main_img
                             )
-                            print(ex)
+                            logger.info(ex)
 
                         main_img = False
                         images_product.save()
 
                 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
         except Exception as ex:
-            print("Помилка при оновленні:")
-            print(item['name'])
-            print(ex)
+            logger.info("Помилка при оновленні:")
+            logger.info(item['name'])
+            logger.info(ex)
     
     
 
@@ -1636,7 +1598,7 @@ def get_lizhka_kompanit():
         item = soup.find('div', class_='pagination').find_all('a')
         for i in item:
             if i.get('href') not in pag_list and i.get('href'):
-                print('-->', i.get('href'))
+                logger.info('-->', i.get('href'))
                 pag_list.append(i.get('href'))
         time.sleep(2)
     except:
@@ -1651,14 +1613,14 @@ def get_lizhka_kompanit():
         for i in item:
             if i.get('href') not in link_list:
                 link_list.append(i.get('href'))
-                print(len(link_list), i.get('href'))
+                logger.info(len(link_list), i.get('href'))
 
         time.sleep(2)
 
     # Забераємо інформацію про товар
 
     for i in link_list:
-        print('----------------------------------')
+        logger.info('----------------------------------')
         source = requests.get(i,headers=HEADERS).text
         soup = BeautifulSoup(source, 'html.parser')
     
@@ -1669,8 +1631,8 @@ def get_lizhka_kompanit():
         size = ['', '']
 
 
-        print(prom)
-        print(name)
+        logger.info(prom)
+        logger.info(name)
 
         for i in prop_list:
             val = i.getText()
@@ -1684,7 +1646,7 @@ def get_lizhka_kompanit():
             if d_match:
                 size[1] = num_check(val)
 
-        print(size)
+        logger.info(size)
 
         cards.append({
             'id': prod_id,
@@ -1703,7 +1665,7 @@ def get_lizhka_kompanit():
 
         try:
             img = soup.find('img', class_='js-lazyload slider__slide-img').get('data-zzload-source-img')
-            print(img)
+            logger.info(img)
             img_name = img.split('/')[len(img.split('/')) - 1]
             img_cards.append({
                                 'id': prod_id,
@@ -1736,13 +1698,9 @@ def get_lizhka_kompanit():
             )
 
             if product.exists():
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
                 stock.append(product[0].id)
 
@@ -1802,19 +1760,15 @@ def get_lizhka_kompanit():
 
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
                 stock.append(product.id)
 
         except Exception as ex:
             
-            print("Помилка при оновленню товара: ", ex)
+            logger.info("Помилка при оновленню товара: ", ex)
 
     
     #Видаляємо товар якого немає в наявності
@@ -1825,13 +1779,9 @@ def get_lizhka_kompanit():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)
 
 
 def get_lizhka_mixmebli():
@@ -1843,7 +1793,7 @@ def get_lizhka_mixmebli():
     categoryId = ['91', '92', '93', '94', '95', '96', '97', '98', '99', '100']
 
 
-    print('response ', response.status_code)
+    logger.info('response ', response.status_code)
 
     if response.status_code == 200:
         root = ET.fromstring(response.content)
@@ -1852,14 +1802,14 @@ def get_lizhka_mixmebli():
             if offer.find('categoryId').text in categoryId and offer.attrib.get('available') == 'true':
                 
                 offer_id = offer.get('id')
-                print(f"Offer ID: {offer_id}")
+                logger.info(f"Offer ID: {offer_id}")
 
                 try:
                     description = offer.find('description').text
                 except:
                     description = ''
 
-                print(description)
+                logger.info(description)
                     
                 params_html = "<table border='1'>"
 
@@ -1913,8 +1863,8 @@ def get_lizhka_mixmebli():
                     except Exception as ex:
                         pass
                 
-                print(f"{offer.find('name').text} {str(offer.find('price').text).replace('.00', '')}")
-                print(50 * '-')
+                logger.info(f"{offer.find('name').text} {str(offer.find('price').text).replace('.00', '')}")
+                logger.info(50 * '-')
 
     
     #Додаємо записи в базу
@@ -1944,13 +1894,9 @@ def get_lizhka_mixmebli():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
             #Додаємо новий товар
             else:
@@ -1998,30 +1944,26 @@ def get_lizhka_mixmebli():
                                 image=str(i['img']),
                                 is_main=main_img
                             )
-                            print(f"Завантажено: {i['url']}")
+                            logger.info(f"Завантажено: {i['url']}")
                         except Exception as ex:
                             images_product = ProductImage.objects.create(
                                 product=product,
                                 image=str(i['url']),
                                 is_main=main_img
                             )
-                            print(ex)
+                            logger.info(ex)
 
                         main_img = False
                         images_product.save()
 
                 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
     
 
 
@@ -2029,7 +1971,7 @@ def get_lizhka_mixmebli():
 def get_lizhka_yudin():
     path = File.objects.get(id=25).files
     
-    print(path)
+    logger.info(path)
 
     book = openpyxl.load_workbook(filename=path)
     sheet_name = ["ЛІЖКА",]
@@ -2072,7 +2014,7 @@ def get_lizhka_yudin():
                             'name': name,
                         })
                     
-                    print((
+                    logger.info((
                         f'{prod_id}: {prom}\n'
                         f'Назва: {name}\n'
                     ))
@@ -2127,13 +2069,9 @@ def get_lizhka_yudin():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
                 stock.append(product[0].id)
 
@@ -2168,19 +2106,15 @@ def get_lizhka_yudin():
 
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
                 stock.append(product.id)
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
 
     
     #Видаляємо товар якого немає в наявності
@@ -2191,10 +2125,6 @@ def get_lizhka_yudin():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)

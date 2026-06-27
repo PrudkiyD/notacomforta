@@ -1,15 +1,18 @@
 from catalog.models import Product, ProductImage, ProductPrice, Category
 from .Tools import HEADERS, change_category, change_category_modul, file_path, product_images_path, num_check
-from update.models import File, History
+from update.models import File
 from bs4 import BeautifulSoup
 import requests
 import time
 import openpyxl
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def get_seria_komfortmebli():
     path = File.objects.get(id=1).files
-    print(path)
+    logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[0]
     cards = []
@@ -141,10 +144,10 @@ def get_seria_komfortmebli():
                 'price':price
             })
 
-            print(prom, '-->', name, '->', price)
+            logger.info(prom, '-->', name, '->', price)
 
             for img in img_list:
-                print(f"->{img} \n")
+                logger.info(f"->{img} \n")
                 try:
                     img_name = img.split('/')[len(img.split('/')) - 1]
                     img_cards.append({
@@ -154,10 +157,10 @@ def get_seria_komfortmebli():
                     })
 
                 except Exception as ex:
-                    print(f'error->{ex} \n')
+                    logger.info(f'error->{ex} \n')
 
             
-            print('-------------------------')
+            logger.info('-------------------------')
     
 
     #Додаємо записи в базу
@@ -185,13 +188,9 @@ def get_seria_komfortmebli():
                 price.price = item['price']
                 price.save()
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
                 stock.append(product[0].id)
 
@@ -242,19 +241,15 @@ def get_seria_komfortmebli():
 
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
                 stock.append(product.id)
 
         except Exception as ex:
             
-            print("Помилка при оновленню товара: ", ex)
+            logger.info("Помилка при оновленню товара: ", ex)
             
 
     #Видаляємо товар якого немає в наявності
@@ -265,18 +260,14 @@ def get_seria_komfortmebli():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)
 
 
 
 def get_seri_svitmebliv():
-    print('Кухні ...')
+    logger.info('Кухні ...')
     src_url = File.objects.get(id=2).url
     source = requests.get(src_url, headers=HEADERS).text
     soup = BeautifulSoup(source, 'html.parser')
@@ -284,7 +275,7 @@ def get_seri_svitmebliv():
     img_cards = []
 
     #Збираєм пагінацію
-    print('Збираєм пагінацію ...')
+    logger.info('Збираєм пагінацію ...')
     items = soup.find_all('a', class_='pagination__link')
     pag_list = [src_url,]
     for i in items:
@@ -293,10 +284,10 @@ def get_seri_svitmebliv():
         if pag not in pag_list:
             pag_list.append(pag)
     
-    print(pag_list)
+    logger.info(pag_list)
 
     #Збираємо посилання на товар
-    print('Збираємо посилання на товар ...')
+    logger.info('Збираємо посилання на товар ...')
     prod_list = []
     check_list =[]
     for p in pag_list:
@@ -316,12 +307,12 @@ def get_seri_svitmebliv():
                     'link':link
                 })
 
-    print(prod_list)
+    logger.info(prod_list)
 
     #Збираємо інформацію про товар
-    print('Збираємо інформацію про товар ...')
+    logger.info('Збираємо інформацію про товар ...')
     for p in prod_list:
-        print(p['link'])
+        logger.info(p['link'])
         source = requests.get(p['link'], headers=HEADERS).text
         soup = BeautifulSoup(source, 'html.parser')
 
@@ -350,7 +341,7 @@ def get_seri_svitmebliv():
         time.sleep(1)
 
     #Додаємо записи в базу
-    print('Додаємо записи в базу ...')
+    logger.info('Додаємо записи в базу ...')
     stock = []
     external_category = 'get_seri_svitmebliv'
 
@@ -370,13 +361,9 @@ def get_seri_svitmebliv():
             )
 
             if product.exists():
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
                 stock.append(product[0].id)
 
@@ -427,19 +414,15 @@ def get_seri_svitmebliv():
 
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
                 stock.append(product.id)
 
         except Exception as ex:
             
-            print("Помилка при оновленню товара: ", ex)
+            logger.info("Помилка при оновленню товара: ", ex)
             
 
     #Видаляємо товар якого немає в наявності
@@ -450,10 +433,6 @@ def get_seri_svitmebliv():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)

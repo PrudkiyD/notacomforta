@@ -1,22 +1,24 @@
 from catalog.models import Product, ProductImage, ProductPrice, Category, Subcategory
 from .Tools import HEADERS, change_category, change_category_modul, file_path, product_images_path, num_check
 import xml.etree.ElementTree as ET
-from update.models import File, History
+from update.models import File
 from bs4 import BeautifulSoup
 import requests
 import openpyxl
 import re
+import logging
 
+logger = logging.getLogger(__name__)
 
 def get_myaki_mebli_matrolux():
     img_cards = []
     cards = []
     size_cards = []
 
-    print('Start ...')
+    logger.info('Start ...')
     req = requests.get(File.objects.get(id=4).url, headers=HEADERS)  
     src = req.text
-    print('Get src ---///')
+    logger.info('Get src ---///')
     soup = BeautifulSoup(src, 'xml')
     item = soup.find_all('entry')
 
@@ -44,8 +46,8 @@ def get_myaki_mebli_matrolux():
             
             
             if  product_type == "Дивани":
-                print(title)
-                print('-'*50)
+                logger.info(title)
+                logger.info('-'*50)
                 for cat_num in range(50):
 
                     if cat_num == 0:
@@ -106,9 +108,9 @@ def get_myaki_mebli_matrolux():
                     
 
         except Exception as ex:
-            print('-'*50)
-            print(ex)
-            print('-'*50)
+            logger.info('-'*50)
+            logger.info(ex)
+            logger.info('-'*50)
 
     #Додаємо записи в базу
     for item in cards:
@@ -140,13 +142,9 @@ def get_myaki_mebli_matrolux():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
             #Додаємо новий товар
             else:
@@ -211,17 +209,13 @@ def get_myaki_mebli_matrolux():
 
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
             
 
         
@@ -235,7 +229,7 @@ def get_myakimebli_mixmebli():
     categoryId = ['103',]
 
 
-    print('response ', response.status_code)
+    logger.info('response ', response.status_code)
 
     if response.status_code == 200:
         root = ET.fromstring(response.content)
@@ -243,7 +237,7 @@ def get_myakimebli_mixmebli():
         for offer in root.find('.//shop/offers').iter('offer'):
             if offer.find('categoryId').text in categoryId and offer.attrib.get('available') == 'true':
                 offer_id = offer.get('id')
-                print(f"Offer ID: {offer_id}")
+                logger.info(f"Offer ID: {offer_id}")
 
                 description = offer.find('description').text
                 params_html = "<table border='1'>"
@@ -298,8 +292,8 @@ def get_myakimebli_mixmebli():
                     except Exception as ex:
                         pass
                 
-                print(f"{offer.find('name').text} {str(offer.find('price').text).replace('.00', '')}")
-                print(50 * '-')
+                logger.info(f"{offer.find('name').text} {str(offer.find('price').text).replace('.00', '')}")
+                logger.info(50 * '-')
 
 
     #Додаємо записи в базу
@@ -331,13 +325,9 @@ def get_myakimebli_mixmebli():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
             #Додаємо новий товар
             else:
@@ -386,37 +376,33 @@ def get_myakimebli_mixmebli():
                                 image=str(i['img']),
                                 is_main=main_img
                             )
-                            print(f"Завантажено: {i['url']}")
+                            logger.info(f"Завантажено: {i['url']}")
                         except Exception as ex:
                             images_product = ProductImage.objects.create(
                                 product=product,
                                 image=str(i['url']),
                                 is_main=main_img
                             )
-                            print(ex)
+                            logger.info(ex)
 
                         main_img = False
                         images_product.save()
 
                 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
 
 
 
 def get_myaki_mebli_yudin():
     path = File.objects.get(id=25).files
     
-    print(path)
+    logger.info(path)
 
     book = openpyxl.load_workbook(filename=path)
     sheet_name = ["КУТИ", "ДИВАНИ", "КОМПЛЕКТИ", "ДИТЯЧІ"]
@@ -473,7 +459,7 @@ def get_myaki_mebli_yudin():
                             'subcategory':subcategory,
                         })
                     
-                    print((
+                    logger.info((
                         f'{prod_id}: {prom}\n'
                         f'Назва: {name}\n'
                     ))
@@ -530,13 +516,9 @@ def get_myaki_mebli_yudin():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
                 stock.append(product[0].id)
 
@@ -572,19 +554,15 @@ def get_myaki_mebli_yudin():
 
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
                 stock.append(product.id)
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
 
     #Видаляємо товар якого немає в наявності
     products = Product.objects.filter(external_category=external_category)
@@ -594,10 +572,6 @@ def get_myaki_mebli_yudin():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)

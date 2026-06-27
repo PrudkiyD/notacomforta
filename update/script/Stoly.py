@@ -1,16 +1,19 @@
 from catalog.models import Product, ProductImage, ProductPrice, Category, Subcategory
 from .Tools import HEADERS, change_category, change_category_modul, file_path, product_images_path, num_check
 import xml.etree.ElementTree as ET
-from update.models import File, History
+from update.models import File
 from bs4 import BeautifulSoup
 import requests
 import openpyxl
 import re
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def get_stoly_neman():
     path =File.objects.get(id=24).files
-    print(path)
+    logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[0]
     cards = []
@@ -48,9 +51,9 @@ def get_stoly_neman():
                 'des_ru': des_ru,
             })
 
-            print(prom, name)
-            #print(size)
-            #print(price)
+            logger.info(prom, name)
+            #logger.info(size)
+            #logger.info(price)
             
             try:
                 size_cards.append({
@@ -82,12 +85,12 @@ def get_stoly_neman():
                         'url': img
                     })
 
-                    #print(img_name)
+                    #logger.info(img_name)
 
                 except Exception as ex:
-                    print(f'///{ex}')
+                    logger.info(f'///{ex}')
             
-            print('-'*50)
+            logger.info('-'*50)
 
 
     #Оновлюємо ціни
@@ -123,13 +126,9 @@ def get_stoly_neman():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
                 stock.append(product[0].id)
 
@@ -191,19 +190,15 @@ def get_stoly_neman():
 
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
                 stock.append(product.id)
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
     
     #Видаляємо товар якого немає в наявності
     products = Product.objects.filter(external_category=external_category)
@@ -213,13 +208,9 @@ def get_stoly_neman():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)
 
 
 def get_stoly_matrolux():
@@ -227,10 +218,10 @@ def get_stoly_matrolux():
     cards = []
     size_cards = []
 
-    print('Start ...')
+    logger.info('Start ...')
     req = requests.get(File.objects.get(id=4).url, headers=HEADERS)  
     src = req.text
-    print('Get src ---///')
+    logger.info('Get src ---///')
     soup = BeautifulSoup(src, 'xml')
     item = soup.find_all('entry')
 
@@ -280,8 +271,8 @@ def get_stoly_matrolux():
 
                     if update:
 
-                        print(title)
-                        print('-'*50)
+                        logger.info(title)
+                        logger.info('-'*50)
 
                         cards.append({
                             'prom':product_id,
@@ -311,15 +302,15 @@ def get_stoly_matrolux():
                                 
 
                             except Exception as ex:
-                                print(f'///-------{ex}---------///')
+                                logger.info(f'///-------{ex}---------///')
                         
 
                     
 
         except Exception as ex:
-            print('-'*50)
-            print(ex)
-            print('-'*50)
+            logger.info('-'*50)
+            logger.info(ex)
+            logger.info('-'*50)
 
     #Додаємо записи в базу
     for item in cards:
@@ -352,13 +343,9 @@ def get_stoly_matrolux():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
             #Додаємо новий товар
             else:
@@ -410,7 +397,7 @@ def get_stoly_matrolux():
                                 image=str(i['img']),
                                 is_main=main_img
                             )
-                            print(f"Завантажено: {i['url']}")
+                            logger.info(f"Завантажено: {i['url']}")
                         except:
                             images_product = ProductImage.objects.create(
                                 product=product,
@@ -423,22 +410,18 @@ def get_stoly_matrolux():
 
                 
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
 
 
 def get_stoly_modul_lux():
     path = File.objects.get(id=27).files
-    print(path)
+    logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[0]
     prod_id = 0
@@ -488,7 +471,7 @@ def get_stoly_modul_lux():
 
                         prod_id += 1
 
-                        print(prod_id, name, size, price)
+                        logger.info(prod_id, name, size, price)
 
     for r in range(sheet.max_row):
         r += 1
@@ -532,7 +515,7 @@ def get_stoly_modul_lux():
 
                     prod_id += 1
 
-                    print(prod_id, name, size, price)
+                    logger.info(prod_id, name, size, price)
     
 
     #Додаємо записи в базу
@@ -564,13 +547,9 @@ def get_stoly_modul_lux():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
             #Додаємо новий товар
             else:
@@ -604,17 +583,13 @@ def get_stoly_modul_lux():
                         main_price = False
 
                 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
 
 
 def get_stoly_jam():
@@ -626,13 +601,13 @@ def get_stoly_jam():
     size = ['', '']
 
     # Забераємо пагенацію
-    print("Забераємо пагенацію")
+    logger.info("Забераємо пагенацію")
     try:
         for p in pag_list:
             source = requests.get(p,headers=HEADERS).text
             soup = BeautifulSoup(source, 'html.parser')
 
-            print(soup)
+            logger.info(soup)
 
             item = soup.find('div', class_='pagination-container').find_all('a')
 
@@ -642,15 +617,15 @@ def get_stoly_jam():
 
                     if pag not in pag_list:
                         pag_list.append(pag)
-                        print(pag)
+                        logger.info(pag)
     except Exception as ex:
-        print(ex)
+        logger.info(ex)
 
 
     # Забераємо посилання на товар
-    print("Забераємо посилання на товар")
+    logger.info("Забераємо посилання на товар")
     for url in pag_list:
-        print(url)
+        logger.info(url)
         source = requests.get(url,headers=HEADERS).text
         soup = BeautifulSoup(source, 'html.parser')
         links = soup.find_all('li', class_="catalog-grid__item")
@@ -659,7 +634,7 @@ def get_stoly_jam():
             link = File.objects.get(id=29).url + l.find('a').get('href')
 
             if link not in prod_link:
-                print(link)
+                logger.info(link)
                 prod_link.append({
                     'num': len(prod_link),
                     'url': link
@@ -667,10 +642,10 @@ def get_stoly_jam():
 
 
     # Забераємо інформацію про товар
-    print("Забераємо інформацію про товар")
+    logger.info("Забераємо інформацію про товар")
     for url in prod_link:
         prom = url['url']
-        print('->',url['url'])
+        logger.info('->',url['url'])
         source = requests.get(url['url'],headers=HEADERS).text
         soup = BeautifulSoup(source, 'html.parser')
 
@@ -679,8 +654,8 @@ def get_stoly_jam():
         price = str(soup.find('div', class_='product__column--right').find('div',  class_="product-price__item").getText(strip=True))
         desc_text = soup.find('div', class_='text').getText()
 
-        print(name)
-        print(price)
+        logger.info(name)
+        logger.info(price)
 
 
         prop_list = soup.find('div', class_='product__column--right').find_all('div',  class_="modification")
@@ -712,7 +687,7 @@ def get_stoly_jam():
             'price': num_check(price),
         })
 
-        print(size, num_check(price))
+        logger.info(size, num_check(price))
 
         img_list = soup.find('div', class_='product__column--left').find_all('li', class_='gallery__thumb')
 
@@ -727,7 +702,7 @@ def get_stoly_jam():
                         })
 
             except Exception as ex:
-                print(f'///-------{ex}---------///')
+                logger.info(f'///-------{ex}---------///')
 
 
     #Додаємо записи в базу
@@ -763,13 +738,9 @@ def get_stoly_jam():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
                 stock.append(product[0].id)
 
@@ -818,7 +789,7 @@ def get_stoly_jam():
                                 image=str(i['img']),
                                 is_main=main_img
                             )
-                            print(f"Завантажено: {i['url']}")
+                            logger.info(f"Завантажено: {i['url']}")
                         except:
                             images_product = ProductImage.objects.create(
                                 product=product,
@@ -830,19 +801,15 @@ def get_stoly_jam():
                         images_product.save()
 
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
                 stock.append(product.id)
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
     
     #Видаляємо товар якого немає в наявності
     products = Product.objects.filter(external_category=external_category)
@@ -852,10 +819,6 @@ def get_stoly_jam():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)

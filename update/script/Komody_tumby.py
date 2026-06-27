@@ -1,23 +1,25 @@
 from catalog.models import Product, ProductImage, ProductPrice, Category, Subcategory
 from .Tools import HEADERS, change_category, change_category_modul, file_path, product_images_path, num_check
 import xml.etree.ElementTree as ET
-from update.models import File, History
+from update.models import File
 from bs4 import BeautifulSoup
 import requests
 import time
 import re
 import openpyxl
+import logging
 
+logger = logging.getLogger(__name__)
 
 def get_komody_tumby_matrolux():
     img_cards = []
     cards = []
     size_cards = []
 
-    print('Start ...')
+    logger.info('Start ...')
     req = requests.get(File.objects.get(id=4).url, headers=HEADERS)  
     src = req.text
-    print('Get src ---///')
+    logger.info('Get src ---///')
     soup = BeautifulSoup(src, 'xml')
     item = soup.find_all('entry')
 
@@ -83,8 +85,8 @@ def get_komody_tumby_matrolux():
 
                     if update:
 
-                        print(title)
-                        print('-'*50)
+                        logger.info(title)
+                        logger.info('-'*50)
 
                         cards.append({
                             'prom':product_id,
@@ -117,15 +119,15 @@ def get_komody_tumby_matrolux():
                                 
 
                             except Exception as ex:
-                                print(f'///-------{ex}---------///')
+                                logger.info(f'///-------{ex}---------///')
                         
 
                     
 
         except Exception as ex:
-            print('-'*50)
-            print(ex)
-            print('-'*50)
+            logger.info('-'*50)
+            logger.info(ex)
+            logger.info('-'*50)
 
     
     
@@ -164,13 +166,9 @@ def get_komody_tumby_matrolux():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
                 stock.append(product[0].id)
 
@@ -224,7 +222,7 @@ def get_komody_tumby_matrolux():
                                 image=str(i['img']),
                                 is_main=main_img
                             )
-                            print(f"Завантажено: {i['url']}")
+                            logger.info(f"Завантажено: {i['url']}")
                         except:
                             images_product = ProductImage.objects.create(
                                 product=product,
@@ -237,19 +235,15 @@ def get_komody_tumby_matrolux():
 
                 
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
                 stock.append(product.id)
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
 
     #Видаляємо товар якого немає в наявності
     products = Product.objects.filter(external_category=external_category)
@@ -259,13 +253,9 @@ def get_komody_tumby_matrolux():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)
 
 
 def get_komody_tumby_everest():
@@ -285,7 +275,7 @@ def get_komody_tumby_everest():
 
     for i in item:
         if i.get('href') not in pag_list:
-            print(i.get('href'))
+            logger.info(i.get('href'))
             pag_list.append(i.get('href'))
     time.sleep(2)
 
@@ -298,14 +288,14 @@ def get_komody_tumby_everest():
         for i in item:
             if i.get('href') not in link_list:
                 link_list.append(i.get('href'))
-                print(len(link_list), i.get('href'))
+                logger.info(len(link_list), i.get('href'))
 
         time.sleep(2)
 
     # Забераємо інформацію про товар
 
     for i in link_list:
-        print('----------------------------------')
+        logger.info('----------------------------------')
         source = requests.get(i,headers=HEADERS).text
         soup = BeautifulSoup(source, 'html.parser')
 
@@ -325,8 +315,8 @@ def get_komody_tumby_everest():
             price = soup.find('span', class_='autocalc-product-price').get_text()
 
 
-        print(name)
-        print(price)
+        logger.info(name)
+        logger.info(price)
 
         for i in prop_list:
             val = i.get_text()
@@ -358,7 +348,7 @@ def get_komody_tumby_everest():
 
         try:
             img = soup.find('a', class_='thumbnail').get('href')
-            print(img)
+            logger.info(img)
             img_name = img.split('/')[len(img.split('/')) - 1]
             img_bytes = requests.get(img).content
             with open("/home/ay507291/notacomforta.pl.ua/www/media/" + img_name.replace('%', ''), "wb") as f:
@@ -418,14 +408,14 @@ def get_komody_tumby_arbordrev():
                     'num': len(links_list),
                     'url': link
                 })
-                print(len(links_list), link)
+                logger.info(len(links_list), link)
 
         time.sleep(1)
 
     # Забераємо інформацію про товар
 
     for url in links_list:
-        print('--------------------------------------------')
+        logger.info('--------------------------------------------')
         source = requests.get(url['url'],headers=HEADERS).text
         soup = BeautifulSoup(source, 'html.parser')
         name = soup.find('h1').get_text()
@@ -437,7 +427,7 @@ def get_komody_tumby_arbordrev():
         list = []
         material = []
 
-        print(url['num'], name, price)
+        logger.info(url['num'], name, price)
         
         img_cards.append({
             'id': url['num'],
@@ -486,7 +476,7 @@ def get_komody_tumby_arbordrev():
                     if active not in material:
                         material.append(active)
 
-        print(material)
+        logger.info(material)
 
         for i in prop_list:
             val = i.get_text()
@@ -504,7 +494,7 @@ def get_komody_tumby_arbordrev():
             if d_match:
                 size[2] = num_check(val)
 
-        print(size)
+        logger.info(size)
 
         cards.append({
             'id': url['num'],
@@ -521,7 +511,7 @@ def get_komody_tumby_arbordrev():
 
 def get_komody_tumby_lion():
     path ="/home/ay507291/notacomforta.pl.ua/www"+File.objects.get(id=7).file_up.url
-    print(path)
+    logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[2]
     cards = []
@@ -555,13 +545,13 @@ def get_komody_tumby_lion():
                         'price': price,
                     })
 
-                    print(prod_id, name, price, size)
+                    logger.info(prod_id, name, price, size)
                     prod_id += 1
 
                 else:
                     break
 
-    print('-------------------------------------------------------')
+    logger.info('-------------------------------------------------------')
 
     for r in range(sheet.max_row):
         r += 1
@@ -595,16 +585,16 @@ def get_komody_tumby_lion():
                         'price': price,
                     })
 
-                    print(prod_id, name, price, size)
+                    logger.info(prod_id, name, price, size)
                     prod_id += 1
 
     #Оновлюємо ціни
 
 
 def get_komody_tumby_svitmebliv():
-    print('Комоди та тумби ...')
+    logger.info('Комоди та тумби ...')
     path =File.objects.get(id=13).files
-    print(path)
+    logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[2]
 
@@ -638,7 +628,7 @@ def get_komody_tumby_svitmebliv():
                             'price': price,
                         })
 
-                        print(prod_id, name, price)
+                        logger.info(prod_id, name, price)
                         prod_id += 1
 
                     else:
@@ -674,7 +664,7 @@ def get_komody_tumby_svitmebliv():
                             'price': price,
                         })
 
-                        print(prod_id, name, price)
+                        logger.info(prod_id, name, price)
                         prod_id += 1
 
     sheet = book.worksheets[0]
@@ -703,7 +693,7 @@ def get_komody_tumby_svitmebliv():
                             'price': price,
                         })
 
-                        print(prod_id, name, price)
+                        logger.info(prod_id, name, price)
                         prod_id += 1
 
                     except:
@@ -742,13 +732,9 @@ def get_komody_tumby_svitmebliv():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
                 stock.append(product[0].id)
 
@@ -779,19 +765,15 @@ def get_komody_tumby_svitmebliv():
                         prace_product.save()
                         main_price = False
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
                 stock.append(product.id)
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
 
     #Видаляємо товар якого немає в наявності
     products = Product.objects.filter(external_category=external_category)
@@ -801,19 +783,15 @@ def get_komody_tumby_svitmebliv():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)
     
 
 
 def get_komody_tumby_olimp():
     path ="/home/ay507291/notacomforta.pl.ua/www"+File.objects.get(id=8).file_up.url
-    print(path)
+    logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[0]
     prod_id = 0
@@ -852,7 +830,7 @@ def get_komody_tumby_olimp():
                             'price': price,
                         })
 
-                        print(prod_id, name, price)
+                        logger.info(prod_id, name, price)
                         prod_id += 1
 
                     except:
@@ -924,8 +902,8 @@ def get_komody_tumby_kompanit():
 
 
 
-        print(url['url'])
-        print(name)
+        logger.info(url['url'])
+        logger.info(name)
 
         for i in prop_list:
             val = i.get_text()
@@ -963,7 +941,7 @@ def get_komody_tumby_kompanit():
 
         for i in img_list:
             img = i.get('data-mfp-src')
-            print(img)
+            logger.info(img)
             img_name = img.split('/')[len(img.split('/')) - 1]
 
             img_cards.append({
@@ -972,9 +950,9 @@ def get_komody_tumby_kompanit():
                 'url': img
             })
         
-        print(size)
+        logger.info(size)
 
-        print('-------------------------------')
+        logger.info('-------------------------------')
 
 
     #Додаємо записи в базу
@@ -997,13 +975,9 @@ def get_komody_tumby_kompanit():
             )
 
             if product.exists():
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
                 stock.append(product[0].id)
 
@@ -1064,19 +1038,15 @@ def get_komody_tumby_kompanit():
 
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
                 stock.append(product.id)
 
         except Exception as ex:
             
-            print("Помилка при оновленню товара: ", ex)
+            logger.info("Помилка при оновленню товара: ", ex)
 
     
     #Видаляємо товар якого немає в наявності
@@ -1087,18 +1057,14 @@ def get_komody_tumby_kompanit():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)
 
 
 def get_komody_tumby_neman():
     path ="/home/ay507291/notacomforta.pl.ua/www"+File.objects.get(id=9).file_up.url
-    print(path)
+    logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet_1 = book.worksheets[0]
 
@@ -1155,16 +1121,16 @@ def get_komody_tumby_neman():
                 except:
                     pass
 
-            print('--------------------------')
-            print(prom)
-            print(name, price)
+            logger.info('--------------------------')
+            logger.info(prom)
+            logger.info(name, price)
 
     #Оновлюємо ціни
 
 
 def get_komody_tumby_comfortmebli():
     path =File.objects.get(id=35).files
-    print(path)
+    logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[0]
     cards = []
@@ -1204,7 +1170,7 @@ def get_komody_tumby_comfortmebli():
                 'width':width,
             })
 
-            print(prom, '-->', name, '->', price)
+            logger.info(prom, '-->', name, '->', price)
 
             for img in img_list:
                 try:
@@ -1216,9 +1182,9 @@ def get_komody_tumby_comfortmebli():
                     })
 
                 except Exception as ex:
-                    print(f'///-------{ex}---------///')
+                    logger.info(f'///-------{ex}---------///')
 
-            print('-------------------------')
+            logger.info('-------------------------')
 
     #Додаємо записи в базу
     stock = []
@@ -1252,13 +1218,9 @@ def get_komody_tumby_comfortmebli():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
                 stock.append(product[0].id)
 
@@ -1306,7 +1268,7 @@ def get_komody_tumby_comfortmebli():
                                 image=str(i['img']),
                                 is_main=main_img
                             )
-                            print(f"Завантажено: {i['url']}")
+                            logger.info(f"Завантажено: {i['url']}")
                         except:
                             images_product = ProductImage.objects.create(
                                 product=product,
@@ -1319,19 +1281,15 @@ def get_komody_tumby_comfortmebli():
 
                 
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
                 stock.append(product.id)
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
 
     #Видаляємо товар якого немає в наявності
     products = Product.objects.filter(external_category=external_category)
@@ -1341,11 +1299,7 @@ def get_komody_tumby_comfortmebli():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)
     

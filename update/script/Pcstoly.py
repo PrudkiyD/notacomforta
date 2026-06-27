@@ -1,17 +1,19 @@
 from catalog.models import Product, ProductImage, ProductPrice, Category, Subcategory
 from .Tools import HEADERS, change_category, change_category_modul, file_path, product_images_path, num_check
 import xml.etree.ElementTree as ET
-from update.models import File, History
+from update.models import File
 from bs4 import BeautifulSoup
 import requests
 import openpyxl
 import time
 import re
+import logging
 
+logger = logging.getLogger(__name__)
 
 def get_pcstoly_comfortmebli():
     path =File.objects.get(id=36).files
-    print(path)
+    logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[0]
     cards = []
@@ -51,7 +53,7 @@ def get_pcstoly_comfortmebli():
                 'price':price
             })
 
-            print(prom, '-->', name, '->', price)
+            logger.info(prom, '-->', name, '->', price)
 
 
             for img in img_list:
@@ -64,7 +66,7 @@ def get_pcstoly_comfortmebli():
                     })
 
                 except Exception as ex:
-                    print(f'///-------{ex}---------///')
+                    logger.info(f'///-------{ex}---------///')
 
     #Додаємо записи в базу
 
@@ -100,13 +102,9 @@ def get_pcstoly_comfortmebli():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
                 stock.append(product[0].id)
 
@@ -154,7 +152,7 @@ def get_pcstoly_comfortmebli():
                                 image=str(i['img']),
                                 is_main=main_img
                             )
-                            print(f"Завантажено: {i['url']}")
+                            logger.info(f"Завантажено: {i['url']}")
                         except:
                             images_product = ProductImage.objects.create(
                                 product=product,
@@ -167,19 +165,15 @@ def get_pcstoly_comfortmebli():
 
                 
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
                 stock.append(product.id)
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
 
 
 
@@ -188,10 +182,10 @@ def get_pcstoly_matrolux():
     cards = []
     size_cards = []
 
-    print('Start ...')
+    logger.info('Start ...')
     req = requests.get(File.objects.get(id=4).url, headers=HEADERS)  
     src = req.text
-    print('Get src ---///')
+    logger.info('Get src ---///')
     soup = BeautifulSoup(src, 'xml')
     item = soup.find_all('entry')
 
@@ -234,8 +228,8 @@ def get_pcstoly_matrolux():
 
 
                     if update:
-                        print(title)
-                        print('-'*50)
+                        logger.info(title)
+                        logger.info('-'*50)
 
                         cards.append({
                             'prom':product_id,
@@ -266,16 +260,16 @@ def get_pcstoly_matrolux():
                                 
 
                             except Exception as ex:
-                                print(f'///-------{ex}---------///')
+                                logger.info(f'///-------{ex}---------///')
                         
                         
 
                     
 
         except Exception as ex:
-            print('-'*50)
-            print(ex)
-            print('-'*50)
+            logger.info('-'*50)
+            logger.info(ex)
+            logger.info('-'*50)
 
     
     #Додаємо записи в базу
@@ -309,13 +303,9 @@ def get_pcstoly_matrolux():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
             #Додаємо новий товар
             else:
@@ -363,7 +353,7 @@ def get_pcstoly_matrolux():
                                 image=str(i['img']),
                                 is_main=main_img
                             )
-                            print(f"Завантажено: {i['url']}")
+                            logger.info(f"Завантажено: {i['url']}")
                         except:
                             images_product = ProductImage.objects.create(
                                 product=product,
@@ -376,22 +366,18 @@ def get_pcstoly_matrolux():
 
                 
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
     
 
 def get_pcstoly_neman():
     path =File.objects.get(id=24).files
-    print(path)
+    logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[0]
     cards = []
@@ -427,9 +413,9 @@ def get_pcstoly_neman():
                 'des_ru': des_ru,
             })
 
-            print(prom, name)
-            #print(size)
-            #print(price)
+            logger.info(prom, name)
+            #logger.info(size)
+            #logger.info(price)
             
             try:
                 size_cards.append({
@@ -461,12 +447,12 @@ def get_pcstoly_neman():
                         'url': img
                     })
 
-                    #print(img_name)
+                    #logger.info(img_name)
 
                 except Exception as ex:
-                    print(f'///{ex}')
+                    logger.info(f'///{ex}')
             
-            print('-'*50)
+            logger.info('-'*50)
 
     #Оновлюємо ціни
     #Додаємо записи в базу
@@ -501,13 +487,9 @@ def get_pcstoly_neman():
 
                         index += 1
 
-                print('old', product[0].name)
+                logger.info('old', product[0].name)
 
-                history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product[0].name
-                        )
-                history.save()
+                
 
                 stock.append(product[0].id)
 
@@ -569,19 +551,15 @@ def get_pcstoly_neman():
 
                 product.save()
 
-                print('new', item['name'])
+                logger.info('new', item['name'])
 
-                history = History.objects.create(
-                            name=f"Додано товар",
-                            description=item['name']
-                        )
-                history.save()
+                
 
                 stock.append(product.id)
 
         except Exception as ex:
             
-            print(ex)
+            logger.info(ex)
 
     #Видаляємо товар якого немає в наявності
     products = Product.objects.filter(external_category=external_category)
@@ -591,10 +569,6 @@ def get_pcstoly_neman():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)

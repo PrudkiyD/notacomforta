@@ -1,25 +1,27 @@
 from catalog.models import Product, ProductImage, ProductPrice, Category, Subcategory, Seria
 from .Tools import HEADERS, change_category, change_category_modul, file_path, product_images_path, num_check
 import xml.etree.ElementTree as ET
-from update.models import File, History
+from update.models import File
 from bs4 import BeautifulSoup
 import requests
 from googletrans import Translator
 import time
+import logging
 
+logger = logging.getLogger(__name__)
 
 def get_stinka_matrolux():
     img_cards = []
     modul_cards = []
     product_cards = []
 
-    print('Start m ...')
+    logger.info('Start m ...')
     req = requests.get(File.objects.get(id=4).url, headers=HEADERS)  
     src = req.text
 
-    print(src)
+    logger.info(src)
 
-    print('Get src m ---///')
+    logger.info('Get src m ---///')
     soup = BeautifulSoup(src, 'xml')
     item = soup.find_all('entry')
 
@@ -199,9 +201,9 @@ def get_stinka_matrolux():
                         pass
 
         except Exception as ex:
-            print('-'*50)
-            print(ex)
-            print('-'*50)
+            logger.info('-'*50)
+            logger.info(ex)
+            logger.info('-'*50)
 
     #Оновлення товара
 
@@ -214,13 +216,9 @@ def get_stinka_matrolux():
         if seria.exists():
             #Оновлюємо
             seria = seria.first()
-            print(f"old: {seria.name}")
+            logger.info(f"old: {seria.name}")
 
-            history = History.objects.create(
-                            name=f"Оновлено комплети товарів",
-                            description=seria.name
-                        )
-            history.save()
+            
 
         else:
             #Додаємо
@@ -230,13 +228,9 @@ def get_stinka_matrolux():
                 manufacturer_id=manufacturer
             )
             seria.save()
-            print(f"new: {m['name']}")
+            logger.info(f"new: {m['name']}")
 
-            history = History.objects.create(
-                            name=f"Додано комплети товарів",
-                            description=m['name']
-                        )
-            history.save()
+            
 
         for p in product_cards:
                 if p['modul_id'] == m['id']:
@@ -260,13 +254,9 @@ def get_stinka_matrolux():
                             price.sale = p['sale']
                             price.save()
 
-                        print(f"old: {  product.name}")
+                        logger.info(f"old: {  product.name}")
 
-                        history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product.name
-                        )
-                        history.save()
+                        
 
                     else:
                         #Додаємо
@@ -315,12 +305,8 @@ def get_stinka_matrolux():
                                 images_product.save()
 
                         product.save()
-                        print(f"new: {p['name']}")
-                        history = History.objects.create(
-                            name=f"Додано товар",
-                            description=product.name
-                        )
-                        history.save()
+                        logger.info(f"new: {p['name']}")
+                        
 
 
-        print('-'*50)
+        logger.info('-'*50)

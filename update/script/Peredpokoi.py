@@ -1,18 +1,20 @@
 from catalog.models import Product, ProductImage, ProductPrice, Category, Seria
 from .Tools import HEADERS, change_category, change_category_modul, file_path, product_images_path, num_check
-from update.models import File, History
+from update.models import File
 from bs4 import BeautifulSoup
 import requests
 import time
 import openpyxl
 import re
+import logging
 
+logger = logging.getLogger(__name__)
 
 def get_peredpokoi_products_gerbor():
     row = 0
 
     path = File.objects.get(id=22).files
-    print(path)
+    logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[0]
 
@@ -49,13 +51,9 @@ def get_peredpokoi_products_gerbor():
                 #Оновлюємо
                 seria = serias.first()
 
-                print(f"old modul: {seria.name}")
+                logger.info(f"old modul: {seria.name}")
 
-                history = History.objects.create(
-                            name=f"Оновлено комплети товарів",
-                            description=name
-                        )
-                history.save()
+                
             else:
                 #Додаємо
                 seria = Seria.objects.create(
@@ -65,13 +63,9 @@ def get_peredpokoi_products_gerbor():
                 )
                 seria.save()
 
-                print(f'new modul: {name}')
+                logger.info(f'new modul: {name}')
 
-                history = History.objects.create(
-                            name=f"Додано комплети товарів",
-                            description=name
-                        )
-                history.save()
+                
             #---------------------------------------------------
 
             while True:
@@ -95,13 +89,9 @@ def get_peredpokoi_products_gerbor():
                         product_price.price = price
                         product_price.save()
 
-                        print(f"old: {product.name}")
+                        logger.info(f"old: {product.name}")
 
-                        history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=name
-                        )
-                        history.save()
+                        
                     
                     else:
                         #Додаємо
@@ -123,13 +113,9 @@ def get_peredpokoi_products_gerbor():
                             price=price
                         )
 
-                        print(f'new: {name}')
+                        logger.info(f'new: {name}')
 
-                        history = History.objects.create(
-                            name=f"Додано товар",
-                            description=name
-                        )
-                        history.save()
+                        
                     #---------------------------------------------------
                     
                 except:
@@ -137,14 +123,14 @@ def get_peredpokoi_products_gerbor():
 
 
 def get_peredpokoi_products_svitmebliv():
-    print('Передпокій ...')
+    logger.info('Передпокій ...')
     modul_cards = []
     product_cards = []
     modul_id = 0
     prod_id = 0
 
     path = File.objects.get(id=13).files
-    print(path)
+    logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[0]
 
@@ -198,7 +184,7 @@ def get_peredpokoi_products_svitmebliv():
 
                 name = cell[7:]
                 
-                print(name)
+                logger.info(name)
                 
                 column = c + 4
                 row = r
@@ -258,7 +244,7 @@ def get_peredpokoi_products_svitmebliv():
 
                 name = cell
                 
-                print(f"{modul_id} {name}")
+                logger.info(f"{modul_id} {name}")
                 
                 column = c + 4
                 row = r
@@ -318,13 +304,9 @@ def get_peredpokoi_products_svitmebliv():
         if seria.exists():
             #Оновлюємо
             seria = seria.first()
-            print(f"old: {seria.name}")
+            logger.info(f"old: {seria.name}")
 
-            history = History.objects.create(
-                            name=f"Оновлено комплети товарів",
-                            description=seria.name
-                        )
-            history.save()
+            
 
         else:
             #Додаємо
@@ -334,13 +316,9 @@ def get_peredpokoi_products_svitmebliv():
                 manufacturer_id=manufacturer
             )
             seria.save()
-            print(f"new: {m['name']}")
+            logger.info(f"new: {m['name']}")
 
-            history = History.objects.create(
-                            name=f"Додано комплети товарів",
-                            description=m['name']
-                        )
-            history.save()
+            
 
         for p in product_cards:
                 if p['modul_id'] == m['id']:
@@ -363,13 +341,9 @@ def get_peredpokoi_products_svitmebliv():
                             price.price = p['price']
                             price.save()
 
-                        print(f"old: {  product.name}")
+                        logger.info(f"old: {  product.name}")
 
-                        history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product.name
-                        )
-                        history.save()
+                        
 
                         stock.append(product.id)
 
@@ -396,18 +370,14 @@ def get_peredpokoi_products_svitmebliv():
                         
                         product.category.add(category)
 
-                        print(f"new: {p['name']}")
+                        logger.info(f"new: {p['name']}")
 
-                        history = History.objects.create(
-                            name=f"Додано товар",
-                            description=product.name
-                        )
-                        history.save()
+                        
 
                         stock.append(product.id)
 
 
-        print('-'*50)
+        logger.info('-'*50)
 
     #Видаляємо товар якого немає в наявності
     products = Product.objects.filter(external_category=external_category)
@@ -417,13 +387,9 @@ def get_peredpokoi_products_svitmebliv():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)
 
     
     Seria.objects.filter(products__isnull=True).delete()
@@ -432,7 +398,7 @@ def get_peredpokoi_products_svitmebliv():
 
 def get_peredpokoi_products_comfortmebli():
     path = File.objects.get(id=32).files
-    print(path)
+    logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[0]
     
@@ -479,7 +445,7 @@ def get_peredpokoi_products_comfortmebli():
                 'name':name,
             })
 
-            print(prom, '-->', name, '->', price)
+            logger.info(prom, '-->', name, '->', price)
 
             for img in img_list:
                 try:
@@ -491,9 +457,9 @@ def get_peredpokoi_products_comfortmebli():
                     })
 
                 except Exception as ex:
-                    print(f'///-------{ex}---------///')
+                    logger.info(f'///-------{ex}---------///')
 
-            print('-------------------------')
+            logger.info('-------------------------')
 
 
     #Оновлення товара
@@ -509,13 +475,9 @@ def get_peredpokoi_products_comfortmebli():
         if seria.exists():
             #Оновлюємо
             seria = seria.first()
-            print(f"old: {seria.name}")
+            logger.info(f"old: {seria.name}")
 
-            history = History.objects.create(
-                            name=f"Оновлено комплети товарів",
-                            description=seria.name
-                        )
-            history.save()
+            
 
         else:
             #Додаємо
@@ -525,13 +487,9 @@ def get_peredpokoi_products_comfortmebli():
                 manufacturer_id=manufacturer
             )
             seria.save()
-            print(f"new: {m['name']}")
+            logger.info(f"new: {m['name']}")
 
-            history = History.objects.create(
-                            name=f"Додано комплети товарів",
-                            description=m['name']
-                        )
-            history.save()
+            
 
         for p in product_cards:
                 if p['modul_id'] == m['id']:
@@ -554,13 +512,9 @@ def get_peredpokoi_products_comfortmebli():
                             price.price = p['price']
                             price.save()
 
-                        print(f"old: {  product.name}")
+                        logger.info(f"old: {  product.name}")
 
-                        history = History.objects.create(
-                            name=f"Оновлено товар",
-                            description=product.name
-                        )
-                        history.save()
+                        
 
                         stock.append(product.id)
 
@@ -593,7 +547,7 @@ def get_peredpokoi_products_comfortmebli():
 
                         for i in img_cards:
                             if i['id'] == p['id']:
-                                print(i['url'])
+                                logger.info(i['url'])
                                 try:
                                     img_bytes = requests.get(i['url'], headers=HEADERS).content
                                     with open(product_images_path + i['img'], "wb") as f:
@@ -605,7 +559,7 @@ def get_peredpokoi_products_comfortmebli():
                                         is_main=main_img
                                     )
                                 except Exception as ex:
-                                    print(ex)
+                                    logger.info(ex)
                                     images_product = ProductImage.objects.create(
                                         product=product,
                                         image=str(i['url']),
@@ -619,18 +573,14 @@ def get_peredpokoi_products_comfortmebli():
                         
                         product.category.add(category)
 
-                        print(f"new: {p['name']}")
+                        logger.info(f"new: {p['name']}")
 
-                        history = History.objects.create(
-                            name=f"Додано товар",
-                            description=product.name
-                        )
-                        history.save()
+                        
 
                         stock.append(product.id)
 
 
-        print('-'*50)
+        logger.info('-'*50)
 
     #Видаляємо товар якого немає в наявності
     products = Product.objects.filter(external_category=external_category)
@@ -640,13 +590,9 @@ def get_peredpokoi_products_comfortmebli():
         if product.id not in stock:
             product.delete()
 
-            history = History.objects.create(
-                            name=f"Видалино товар",
-                            description=product.name
-                        )
-            history.save()
+            
 
-            print('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)
 
     
     Seria.objects.filter(products__isnull=True).delete()
