@@ -21,13 +21,13 @@ class TaskExecution(models.Model):
         SUCCESS = "SUCCESS", "Завершено"
         FAILED = "FAILED", "Сталася помилка"
 
-    name = models.CharField(max_length=255)
-    status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
-    result = models.TextField(null=True, blank=True)
-    error = models.TextField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    started_at = models.DateTimeField(null=True, blank=True)
-    finished_at = models.DateTimeField(null=True, blank=True)
+    name = models.CharField(max_length=255, verbose_name="Назва")
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING, verbose_name="Статус")
+    result = models.TextField(null=True, blank=True, verbose_name="Результат")
+    error = models.TextField(null=True, blank=True, verbose_name="Помилка")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Створено")
+    started_at = models.DateTimeField(null=True, blank=True, verbose_name="Почато")
+    finished_at = models.DateTimeField(null=True, blank=True, verbose_name="Завершено")
 
     def __str__(self):
         return f"{self.name} ({self.status})"
