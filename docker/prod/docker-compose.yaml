@@ -23,6 +23,7 @@ services:
       --bind 0.0.0.0:8000 --workers 3 --timeout 300
     depends_on: 
       - db
+      - redis
       
   nginx:
     image: nginx:latest
@@ -38,3 +39,20 @@ services:
       - ../../media:/app/media
     depends_on:
       - app
+  redis:
+    image: redis:7-alpine
+    container_name: notacomforta_redis
+
+  celery:
+    build:
+      context: ../..
+      dockerfile: docker/dev/Dockerfile
+    container_name: notacomforta_celery
+    volumes:
+      - ../../:/app
+    env_file:
+      - ../../.env
+    command: celery -A notacomforta worker --loglevel=info
+    depends_on:
+      - db
+      - redis
