@@ -20,7 +20,6 @@ jobs:
             cd /var/www/notacomforta
             git pull
             cd /var/www/notacomforta/docker/prod
-            docker compose down
             docker compose up -d --build
             docker exec notacomforta_app python manage.py migrate --noinput
             docker exec notacomforta_app python manage.py collectstatic --noinput
