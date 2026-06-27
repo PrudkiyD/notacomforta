@@ -4,6 +4,5 @@ __pycache__
 *.sqlite3
 *.pyc
 venv
-static/
 staticfiles/
 media/

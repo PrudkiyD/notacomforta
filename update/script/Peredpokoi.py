@@ -72,7 +72,7 @@ def get_peredpokoi_products_gerbor():
                 r += 1
                 try:
                     name = sheet[r][2].value
-                    price = int(sheet[r][5].value)
+                    price = int(sheet[r][7].value)
                     prom = str(sheet[r][3].value)
 
                     #Оновлюємо дані про товар
