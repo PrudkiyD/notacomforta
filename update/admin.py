@@ -1,6 +1,5 @@
 from django.contrib import admin
 from .models import File, TaskExecution
-from django.contrib.admin.models import LogEntry
 
 
 @admin.register(File)
@@ -64,3 +63,5 @@ class TaskExecutionAdmin(admin.ModelAdmin):
 
     class Media:
         js = ('js/update_admin.js',)
+
+

@@ -360,25 +360,37 @@ def get_matrasy_emm():
             )
 
             if product.exists():
-                price = ProductPrice.objects.filter(product=product.first())
-                index = 0
+                product = product.first()
+                price = ProductPrice.objects.filter(product=product).delete()
+
+                main_price = True
 
                 for s in size_cards:
+                    sale = False
+
                     if s['id'] == item['id']:
-                        curent_price = price[index]
 
-                        curent_price.price = s['price']
-                        curent_price.old_price = s['oldprice']
-                        curent_price.sale = s['sale']
-                        curent_price.save()
+                        prace_product = ProductPrice.objects.create(
+                            product=product,
+                            price=s['price'],
+                            width=s['w'],
+                            depth=s['d'],
+                            is_main=main_price,
+                            setup=s['option'],
+                            old_price=s['oldprice'],
+                            sale=s['sale'],
+                        )
 
-                        index += 1
+                        prace_product.save()
+                        
+                        main_price = False
+                
 
-                logger.info('old', product[0].name)
+                logger.info('old', product.name)
 
                 
 
-                stock.append(product[0].id)
+                stock.append(product.id)
 
             #Додаємо новий товар
             else:
@@ -595,19 +607,32 @@ def get_matrasy_eurosleep():
             )
 
             if product.exists():
-                price = ProductPrice.objects.filter(product=product.first())
-                index = 0
+                product = product.first()
+                price = ProductPrice.objects.filter(product=product).delete()
+
+                main_price = True
 
                 for s in size_cards:
+                    sale = False
+
                     if s['id'] == item['id']:
-                        curent_price = price[index]
 
-                        curent_price.price = s['price']
-                        curent_price.save()
+                        prace_product = ProductPrice.objects.create(
+                            product=product,
+                            price=s['price'],
+                            width=s['w'],
+                            height=s['h'],
+                            depth=s['d'],
+                            is_main=main_price,
+                            setup=s['option']
+                        )
 
-                        index += 1
+                        prace_product.save()
+                        
+                        main_price = False
+                
 
-                logger.info('old', product[0].name)
+                logger.info('old', product.name)
 
                 
 
