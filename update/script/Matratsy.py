@@ -594,10 +594,15 @@ def get_matrasy_eurosleep():
 
     #Оновлюємо ціни
     #Додаємо записи в базу
+
+    stock = []
+    
     for item in cards:
         category = Category.objects.get(id=10)
         manufacturer = 16
-        external_category = 'matrasy'
+        external_category = 'get_matrasy_eurosleep'
+        change_category(manufacturer, 'matrasy', item['prom'], external_category)
+
         try:
         #Оновлюємо ціну
             product = Product.objects.filter(
@@ -634,7 +639,7 @@ def get_matrasy_eurosleep():
 
                 logger.info('old', product.name)
 
-                
+                stock.append(product.id)
 
             #Додаємо новий товар
             else:
@@ -696,8 +701,20 @@ def get_matrasy_eurosleep():
 
                 logger.info('new', item['name'])
 
-                
+                stock.append(product.id)
 
         except Exception as ex:
             
             logger.info(ex)
+
+    #Видаляємо товар якого немає в наявності
+    products = Product.objects.filter(external_category=external_category)
+
+    for product in products:
+
+        if product.id not in stock:
+            product.delete()
+
+            
+
+            logger.info('Видалино: ', product.name)
