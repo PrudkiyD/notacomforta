@@ -198,6 +198,7 @@ def successful(request):
             cart.delete()
 
             try:
+                
                 admins = os.getenv('TG_ID_ADMIN').split(',')
 
                 text_ms = (f"📦 <b>Номер замовлення:</b> {order.id}\n"
@@ -232,8 +233,9 @@ def successful(request):
                             }
                         }
                     )
-                    
+
             except Exception as ex:
+
                 text_ms = f"💬 <b>Сталася помилка при відправленні повідомлення:</b> {ex}"
                 for chat_id in admins:
                     requests.post(
