@@ -200,7 +200,7 @@ def successful(request):
             try:
                 admins = os.getenv('TG_ID_ADMIN').split(',')
 
-                text_ms = (f"📦 <b>Номер замовлення:</b> {order.order_id}\n"
+                text_ms = (f"📦 <b>Номер замовлення:</b> {order.id}\n"
                         f"👤 <b>Прізвище та ім'я:</b> {order.customer}\n"
                         f"📞 <b>Телефон:</b> {order.phone}\n"
                         f"💬 <b>Коментар:</b> {order.coment}\n"
