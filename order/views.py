@@ -233,12 +233,13 @@ def successful(request):
                         }
                     )
             except Exception as ex:
+                text_ms = f"Сталася помилка при відправленні повідомлення: {ex}"
                 for chat_id in admins:
                     requests.post(
                             f"https://api.telegram.org/bot{os.getenv('TELEGRAM_TOKEN')}/sendMessage",
                             json={
                                 'chat_id': chat_id.strip(),
-                                'text': ex,
+                                'text': text_ms,
                                 'parse_mode': 'HTML',
                             }
                         )
