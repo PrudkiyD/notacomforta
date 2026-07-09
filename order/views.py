@@ -232,8 +232,16 @@ def successful(request):
                             }
                         }
                     )
-            except:
-                pass
+            except Exception as ex:
+                for chat_id in admins:
+                    requests.post(
+                            f"https://api.telegram.org/bot{os.getenv('TELEGRAM_TOKEN')}/sendMessage",
+                            json={
+                                'chat_id': chat_id.strip(),
+                                'text': ex,
+                                'parse_mode': 'HTML',
+                            }
+                        )
 
             return redirect(f'/order/successful/{order.id}')
     except Exception as ex:
