@@ -219,13 +219,13 @@ def successful(request):
                                     [
                                         {
                                             'text': '🔎 Переглянути на сайті',
-                                            'url': f'https://www.notacomforta.pl.ua/order/track?number={order.order_id}'
+                                            'url': f'https://www.notacomforta.pl.ua/order/track?number={order.id}'
                                         }
                                     ],
                                     [
                                         {
                                             'text': '🔧 Адмін панель',
-                                            'url': f'https://www.notacomforta.pl.ua/admin/order/order/{order.order_id}/change/'
+                                            'url': f'https://www.notacomforta.pl.ua/admin/order/order/{order.id}/change/'
                                         }
                                     ]
                                 ]
