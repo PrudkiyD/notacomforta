@@ -33,11 +33,11 @@ class CartOrderItemInline(admin.TabularInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'customer', 'phone', 'created_at', 'total', 'send')
+    list_display = ('id', 'customer', 'phone', 'created_at', 'total')
     search_fields = ('customer', 'phone')
     list_filter = ('created_at',)
     readonly_fields = ('customer', 'phone', 'created_at', 'coment', 'total')
-    fields = ('customer', 'phone', 'coment', 'created_at', 'total', 'send')
+    fields = ('customer', 'phone', 'coment', 'created_at', 'total')
     ordering = ('-created_at',)
     inlines = [CartOrderItemInline]
 
