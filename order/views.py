@@ -232,6 +232,7 @@ def successful(request):
                             }
                         }
                     )
+                    
             except Exception as ex:
                 text_ms = f"💬 <b>Сталася помилка при відправленні повідомлення:</b> {ex}"
                 for chat_id in admins:
