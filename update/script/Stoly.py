@@ -816,13 +816,14 @@ def get_stoly_jam():
             logger.info(ex)
     
     #Видаляємо товар якого немає в наявності
-    """products = Product.objects.filter(external_category=external_category)
+    products = Product.objects.filter(external_category=external_category)
+    
+    if stock:
+        for product in products:
 
-    for product in products:
+            if product.id not in stock:
+                product.delete()
 
-        if product.id not in stock:
-            product.delete()
+                
 
-            
-
-            logger.info('Видалино: ', product.name)"""
+                logger.info('Видалино: ', product.name)
