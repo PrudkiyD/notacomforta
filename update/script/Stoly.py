@@ -600,8 +600,21 @@ def get_stoly_jam():
     pag_list = [File.objects.get(id=28).url, ]
     size = ['', '']
 
+    url = File.objects.get(id=28).url  # замініть на потрібний URL
+
+    resp = requests.get(url)
+    html = resp.text
+
+    match = re.search(r'defaultHash\s*=\s*"([^"]+)"', html)
+
+    if match:
+        default_hash = match.group(1)
+        print("defaultHash:", default_hash)
+    else:
+        print("Хеш не знайдено")
+
     cookies = {
-        "challenge_passed": "1725b01dc88507004de88350742a6d6774bbdc73878508f53f0742854c0e4951"
+        "challenge_passed": default_hash
         }
 
     # Забераємо пагенацію
@@ -610,8 +623,6 @@ def get_stoly_jam():
         for p in pag_list:
             source = requests.get(p,headers=HEADERS, cookies=cookies).text
             soup = BeautifulSoup(source, 'html.parser')
-
-            logger.info(soup)
 
             item = soup.find('div', class_='pagination-container').find_all('a')
 
