@@ -166,6 +166,7 @@ def get_products_richman():
             logger.info(ex)
 
     #Видаляємо товар якого немає в наявності
+    '''
     products = Product.objects.filter(external_category=external_category)
 
     for product in products:
@@ -173,6 +174,5 @@ def get_products_richman():
         if product.id not in stock:
             product.delete()
 
-            
-
             logger.info('Видалино: ', product.name)
+    '''
