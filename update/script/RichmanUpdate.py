@@ -133,8 +133,9 @@ def get_products_richman():
                     description=item['des'],
                 )
 
-                product.category.add(Category.objects.get(id=item['category']))
                 product.save()
+                product.category.add(Category.objects.get(id=item['category']))
+                
 
                 main_price = True
 
@@ -167,7 +168,7 @@ def get_products_richman():
             logger.info(ex)
 
     #Видаляємо товар якого немає в наявності
-    
+    '''
     products = Product.objects.filter(external_category=external_category)
 
     for product in products:
@@ -176,4 +177,4 @@ def get_products_richman():
             product.delete()
 
             logger.info(f'Видалино: ', {product.name})
-    
+    '''
