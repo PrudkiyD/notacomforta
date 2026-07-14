@@ -124,8 +124,7 @@ def get_products_richman():
 
             #Додаємо новий товар
             else:
-                product = Product.objects.create(
-                    published=True,  
+                product = Product.objects.create(  
                     external_id=item['prom'],  
                     external_category=external_category,
                     manufacturer_id=manufacturer,  
@@ -144,7 +143,6 @@ def get_products_richman():
 
                         prace_product = ProductPrice.objects.create(
                             product=product,
-                            published=False,
                             info=s['info'],
                             setup=s['setup'],
                             price=s['price'],
@@ -168,7 +166,8 @@ def get_products_richman():
             logger.info(ex)
 
     #Видаляємо товар якого немає в наявності
-    '''
+    logger.info(stock)
+    
     products = Product.objects.filter(external_category=external_category)
 
     for product in products:
@@ -177,4 +176,4 @@ def get_products_richman():
             product.delete()
 
             logger.info(f'Видалино: ', {product.name})
-    '''
+    
