@@ -134,6 +134,7 @@ def get_products_richman():
                 )
 
                 product.category.add(Category.objects.get(id=item['category']))
+                product.save()
 
                 main_price = True
 
@@ -153,7 +154,7 @@ def get_products_richman():
                         
                         main_price = False
 
-                product.save()
+                
 
                 logger.info('new', item['name'])
 
@@ -166,7 +167,7 @@ def get_products_richman():
             logger.info(ex)
 
     #Видаляємо товар якого немає в наявності
-    '''
+    
     products = Product.objects.filter(external_category=external_category)
 
     for product in products:
@@ -174,5 +175,5 @@ def get_products_richman():
         if product.id not in stock:
             product.delete()
 
-            logger.info('Видалино: ', product.name)
-    '''
+            logger.info(f'Видалино: ', {product.name})
+    

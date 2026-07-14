@@ -2364,3 +2364,19 @@ p img {
 }
 
 
+.des-text table {
+    max-width: 100%;
+}
+
+@media (max-width: 600px) {
+    .des-text table {
+        font-size: 11px;
+        border-collapse: collapse;
+    }
+    .des-text table th,
+    .des-text table td {
+        padding: 3px 4px;
+        white-space: normal; /* дозволяє переносити текст, а не розтягувати таблицю */
+        word-break: break-word;
+    }
+}
