@@ -630,7 +630,7 @@ def get_stoly_jam():
     logger.info("Забераємо посилання на товар")
     for url in pag_list:
         logger.info(url)
-        source = requests.get(url,headers=HEADERS).text
+        source = requests.get(url,headers=HEADERS, cookies=cookies).text
         soup = BeautifulSoup(source, 'html.parser')
         links = soup.find_all('li', class_="catalog-grid__item")
 
@@ -650,7 +650,7 @@ def get_stoly_jam():
     for url in prod_link:
         prom = url['url']
         logger.info('->',url['url'])
-        source = requests.get(url['url'],headers=HEADERS).text
+        source = requests.get(url['url'],headers=HEADERS, cookies=cookies).text
         soup = BeautifulSoup(source, 'html.parser')
 
 
@@ -784,7 +784,7 @@ def get_stoly_jam():
                 for i in img_cards:
                     if i['id'] == item['id']:
                         try:
-                            img_bytes = requests.get(i['url'], headers=HEADERS).content
+                            img_bytes = requests.get(i['url'], headers=HEADERS, cookies=cookies).content
                             with open(product_images_path + i['img'], "wb") as f:
                                 f.write(img_bytes)
 
