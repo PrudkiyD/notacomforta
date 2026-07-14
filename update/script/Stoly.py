@@ -600,11 +600,15 @@ def get_stoly_jam():
     pag_list = [File.objects.get(id=28).url, ]
     size = ['', '']
 
+    cookies = {
+        "challenge_passed": "1725b01dc88507004de88350742a6d6774bbdc73878508f53f0742854c0e4951"
+        }
+
     # Забераємо пагенацію
     logger.info("Забераємо пагенацію")
     try:
         for p in pag_list:
-            source = requests.get(p,headers=HEADERS).text
+            source = requests.get(p,headers=HEADERS, cookies=cookies).text
             soup = BeautifulSoup(source, 'html.parser')
 
             logger.info(soup)
@@ -812,7 +816,7 @@ def get_stoly_jam():
             logger.info(ex)
     
     #Видаляємо товар якого немає в наявності
-    products = Product.objects.filter(external_category=external_category)
+    """products = Product.objects.filter(external_category=external_category)
 
     for product in products:
 
@@ -821,4 +825,4 @@ def get_stoly_jam():
 
             
 
-            logger.info('Видалино: ', product.name)
+            logger.info('Видалино: ', product.name)"""
