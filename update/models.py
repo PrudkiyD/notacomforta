@@ -6,6 +6,7 @@ class File(models.Model):
     name = models.CharField(max_length=255, verbose_name="Назва")
     url = models.CharField(max_length=655, blank=True, null=True, verbose_name="Посилання")
     files = models.FileField(upload_to='files/', blank=True, null=True, verbose_name="Файл")
+    note = models.TextField(null=True, blank=True, verbose_name="Коментар")
 
     def __str__(self):
         return self.name
