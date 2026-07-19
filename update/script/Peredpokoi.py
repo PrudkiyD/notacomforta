@@ -17,6 +17,7 @@ def get_peredpokoi_products_gerbor():
     logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[0]
+    stock=[]
 
     for r in range(sheet.max_row):
             r += 1
@@ -74,6 +75,7 @@ def get_peredpokoi_products_gerbor():
                     name = sheet[r][2].value
                     price = int(sheet[r][7].value)
                     prom = str(sheet[r][3].value)
+                    
 
                     #Оновлюємо дані про товар
                     products = Product.objects.filter(external_id=prom,\
@@ -90,6 +92,7 @@ def get_peredpokoi_products_gerbor():
                         product_price.save()
 
                         logger.info(f"old: {product.name}")
+                        stock.append(product.id)
 
                         
                     
@@ -115,11 +118,15 @@ def get_peredpokoi_products_gerbor():
 
                         logger.info(f'new: {name}')
 
+                        stock.append(product.id)
+
                         
                     #---------------------------------------------------
                     
                 except:
                     break
+
+    
 
 
 def get_peredpokoi_products_svitmebliv():

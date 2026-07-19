@@ -379,9 +379,6 @@ def get_spalni_products_comfortmebli():
 
         if product.id not in stock:
             product.delete()
-
-            
-
             logger.info('Видалино: ', product.name)
 
     
