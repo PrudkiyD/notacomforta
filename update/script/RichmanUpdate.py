@@ -17,9 +17,10 @@ def get_products_richman():
         book = openpyxl.load_workbook(filename=path)
         sheet = book["Ціни"]
 
-        check_list = ['КаБаРе', 'Комфорт Плюс']
+        check_list = ['КаБаРе', 'Комфорт Плюс', 'Диван', 'Диван HOME']
         categorys = {
                 'Диван': {'id': 4},
+                'Диван HOME': {'id': 4},
                 'Ліжко': {'id': 8},
                 'КаБаРе': {'id': 14},
             }
