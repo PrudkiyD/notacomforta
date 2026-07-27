@@ -239,7 +239,7 @@ def get_vitalni_products_bmk():
 
         if product.id not in stock:
             product.delete()
-            logger.info('Видалино: ', product.name)
+            logger.info(product.name)
     
     Seria.objects.filter(products__isnull=True).delete()
 
@@ -359,7 +359,7 @@ def get_vitalni_products_gerbor():
 
         if product.id not in stock:
             product.delete()
-            logger.info('Видалино: ', product.name)
+            logger.info( product.name)
     
     Seria.objects.filter(products__isnull=True).delete()
         
@@ -644,7 +644,7 @@ def get_vitalni_products_svitmebliv():
 
             
 
-            logger.info('Видалино: ', product.name)
+            logger.info( product.name)
 
     
     Seria.objects.filter(products__isnull=True).delete()
@@ -843,6 +843,6 @@ def get_vitalni_products_comfortmebli():
 
             
 
-            logger.info('Видалино: ', product.name)
+            logger.info( product.name)
 
     Seria.objects.filter(products__isnull=True).delete()

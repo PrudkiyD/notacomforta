@@ -210,7 +210,7 @@ def get_stoly_neman():
 
             
 
-            logger.info('Видалино: ', product.name)
+            logger.info( product.name)
 
 
 def get_stoly_matrolux():
@@ -600,7 +600,7 @@ def get_stoly_jam():
     pag_list = [File.objects.get(id=28).url, ]
     size = ['', '']
 
-    url = File.objects.get(id=28).url  # замініть на потрібний URL
+    url = File.objects.get(id=28).url 
 
     resp = requests.get(url)
     html = resp.text
@@ -678,15 +678,18 @@ def get_stoly_jam():
         for p in prop_list:
             val_text = p.getText(strip=True)
     
-            match = re.search('Довжина столу', val_text)
-            match_2 = re.search('Ширина столу', val_text)
+            match = re.search('довжина', val_text, re.IGNORECASE)
+            match_2 = re.search('ширина', val_text, re.IGNORECASE)
 
             if match:
                 size[1] = num_check(val_text)
-
+            else:
+                size[1] = None
 
             if match_2:
                 size[0] = num_check(val_text)
+            else:
+                size[1] = None
     
         cards.append({
             'id': url['num'],
@@ -749,6 +752,8 @@ def get_stoly_jam():
                     if s['id'] == item['id']:
                         curent_price = price[index]
                         curent_price.price = s['price']
+                        curent_price.width = s['w']
+                        curent_price.depth = s['d']
                         curent_price.save()
 
                         index += 1
@@ -837,4 +842,4 @@ def get_stoly_jam():
 
                 
 
-                logger.info('Видалино: ', product.name)
+                logger.info( product.name)
