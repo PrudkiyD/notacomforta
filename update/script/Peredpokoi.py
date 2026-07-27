@@ -12,12 +12,13 @@ logger = logging.getLogger(__name__)
 
 def get_peredpokoi_products_gerbor():
     row = 0
-
+    
     path = File.objects.get(id=22).files
     logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[0]
     stock=[]
+    external_category = 'get_peredpokoi_products_gerbor'
 
     for r in range(sheet.max_row):
             r += 1
@@ -128,6 +129,17 @@ def get_peredpokoi_products_gerbor():
                 except:
                     break
 
+    #Видаляємо товар якого немає в наявності
+    products = Product.objects.filter(external_category=external_category)
+    logger.info('Видаляємо товар якого немає в наявності')
+    logger.info(stock)
+    for product in products:
+
+        if product.id not in stock:
+            product.delete()
+            logger.info('Видалино: ', product.name)
+    
+    Seria.objects.filter(products__isnull=True).delete()
     
 
 

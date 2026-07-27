@@ -296,6 +296,8 @@ def get_vitalni_products_bmk():
 
 def get_vitalni_products_gerbor():
     path = File.objects.get(id=22).files
+    stock = []
+    external_category = 'get_vitalni_products_gerbor'
     logger.info(path)
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[0]
@@ -362,6 +364,7 @@ def get_vitalni_products_gerbor():
                         product_price.price = price
                         product_price.save()
 
+                        stock.append(product.id)
                         logger.info(f"old: {product.name}")
 
                         
@@ -386,6 +389,7 @@ def get_vitalni_products_gerbor():
                             price=price
                         )
 
+                        stock.append(product.id)
                         logger.info(f'new: {name}')
 
                         
@@ -396,6 +400,18 @@ def get_vitalni_products_gerbor():
                     logger.info(ex)
                     break
 
+
+    #Видаляємо товар якого немає в наявності
+    products = Product.objects.filter(external_category=external_category)
+    logger.info('Видаляємо товар якого немає в наявності')
+    logger.info(stock)
+    for product in products:
+
+        if product.id not in stock:
+            product.delete()
+            logger.info('Видалино: ', product.name)
+    
+    Seria.objects.filter(products__isnull=True).delete()
         
 def get_vitalni_products_svitmebliv():
     logger.info('Вітальні ...')
