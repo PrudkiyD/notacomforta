@@ -176,10 +176,14 @@ def get_vitalni_products_bmk():
             #Оновлюємо дані про товар
             products = Product.objects.filter(external_id=prom,\
                                                 manufacturer_id=manufacturer_id,\
-                                                external_category='modul',\
+                                                external_category='get_vitalni_products_bmk',\
                                                     external_seria=prom)
 
             if products.exists():
+
+                ids_to_delete = list(products.values_list('id', flat=True))[1:]
+                Product.objects.filter(id__in=ids_to_delete).delete()
+
                 #Оновлюємо
                 product = products.first()
 
@@ -187,7 +191,7 @@ def get_vitalni_products_bmk():
                 product.save()
 
                 product_price = product.prices.filter(is_main=True).first()
-                product_price.price = price
+                product_price.price = 0
                 product_price.save()
 
                 stock.append(product.id)
@@ -212,7 +216,7 @@ def get_vitalni_products_bmk():
                 product_price = ProductPrice.objects.create(
                     product=product,
                     is_main=True,
-                    price=price
+                    price=0
                 )
 
                 stock.append(product.id)
