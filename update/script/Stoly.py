@@ -598,7 +598,7 @@ def get_stoly_jam():
     img_cards = []
     prod_link = []
     pag_list = [File.objects.get(id=28).url, ]
-    size = ['', '']
+    size = [None, None]
 
     url = File.objects.get(id=28).url 
 
@@ -659,6 +659,7 @@ def get_stoly_jam():
     # Забераємо інформацію про товар
     logger.info("Забераємо інформацію про товар")
     for url in prod_link:
+        size = [None, None]
         prom = url['url']
         logger.info('->',url['url'])
         source = requests.get(url['url'],headers=HEADERS, cookies=cookies).text
@@ -692,10 +693,6 @@ def get_stoly_jam():
 
             else:
                 size[1] = None
-
-        logger.info('Розміри: ')
-        logger.info(size[1])
-        logger.info(size[2])
     
         cards.append({
             'id': url['num'],
@@ -711,7 +708,8 @@ def get_stoly_jam():
             'price': num_check(price),
         })
 
-        logger.info(size, num_check(price))
+        logger.info(num_check(price))
+        logger.info(size)
 
         img_list = soup.find('div', class_='product__column--left').find_all('li', class_='gallery__thumb')
 
@@ -764,7 +762,11 @@ def get_stoly_jam():
 
                         index += 1
 
-                logger.info('old', product[0].name)
+
+                if product[0].external_id == 'https://jam.com.ua/obidnii-rozkladnyi-stil-boston-t-beton-chornyi-black-23/':
+                   logger.info('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+                   logger.info(s['price'])
+                #logger.info('old', product[0].name)
 
                 
 
