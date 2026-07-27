@@ -11,7 +11,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 def get_vitalni_products_bmk():
-    Product.objects(manufacturer_id=8, external_category='modul').delete()
+    Product.objects.filter(manufacturer_id=8, external_category='modul').delete()
     path = File.objects.get(id=23).files
     logger.info(path)
     in_stock = []
