@@ -678,8 +678,8 @@ def get_stoly_jam():
         for p in prop_list:
             val_text = p.getText(strip=True)
     
-            match = re.search('довжина', val_text, re.IGNORECASE)
-            match_2 = re.search('ширина', val_text, re.IGNORECASE)
+            match = re.search('Довжина столу', val_text)
+            match_2 = re.search('Ширина столу', val_text)
 
             if match:
                 size[1] = num_check(val_text)
@@ -688,6 +688,7 @@ def get_stoly_jam():
 
             if match_2:
                 size[0] = num_check(val_text)
+
             else:
                 size[1] = None
     
