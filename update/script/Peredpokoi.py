@@ -80,7 +80,7 @@ def get_peredpokoi_products_gerbor():
                     #Оновлюємо дані про товар
                     products = Product.objects.filter(external_id=prom,\
                                                       manufacturer_id=manufacturer_id,\
-                                                        external_category='external_category',\
+                                                        external_category='get_peredpokoi_products_gerbor',\
                                                             external_seria=modul_prom)
 
                     if products.exists():
