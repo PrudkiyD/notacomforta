@@ -678,11 +678,12 @@ def get_stoly_jam():
         for p in prop_list:
             val_text = p.getText(strip=True)
     
-            match = re.search('Довжина столу', val_text)
-            match_2 = re.search('Ширина столу', val_text)
+            match = re.search('Довжина', val_text, re.IGNORECASE)
+            match_2 = re.search('Ширина', val_text, re.IGNORECASE)
 
             if match:
                 size[1] = num_check(val_text)
+                
             else:
                 size[1] = None
 
@@ -691,6 +692,10 @@ def get_stoly_jam():
 
             else:
                 size[1] = None
+
+        logger.info('Розміри: ')
+        logger.info(size[1])
+        logger.info(size[2])
     
         cards.append({
             'id': url['num'],
@@ -834,13 +839,11 @@ def get_stoly_jam():
     
     #Видаляємо товар якого немає в наявності
     products = Product.objects.filter(external_category=external_category)
-    
+    logger.info('Видаляємо товар якого немає в наявності')
+    logger.info(stock)
     if stock:
         for product in products:
-
             if product.id not in stock:
                 product.delete()
-
-                
 
                 logger.info( product.name)
