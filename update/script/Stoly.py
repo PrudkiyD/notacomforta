@@ -731,6 +731,8 @@ def get_stoly_jam():
 
     stock = []
 
+    Product.objects.filter(external_category = 'stoly', manufacturer_id = 21).delete()
+
     for item in cards:
         category = Category.objects.get(id=12)
         manufacturer = 21
