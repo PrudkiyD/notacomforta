@@ -324,7 +324,7 @@ def get_vitalni_products_gerbor():
                     #Оновлюємо дані про товар
                     products = Product.objects.filter(external_id=prom,\
                                                       manufacturer_id=manufacturer_id,\
-                                                        external_category='modul',\
+                                                        external_category='get_vitalni_products_gerbor',\
                                                             external_seria=prom)
 
                     if products.exists():
