@@ -13,10 +13,6 @@ logger = logging.getLogger(__name__)
 def get_vitalni_products_bmk():
     path = File.objects.get(id=23).files
     logger.info(path)
-
-    Product.objects.filter(manufacturer_id=7, external_category='modul',).update(external_category='get_vitalni_products_bmk')
-
-
     in_stock = []
     external_category = 'vitalni_products_bmk'
 
@@ -184,6 +180,9 @@ def get_vitalni_products_bmk():
                 #Оновлюємо
                 product = products.first()
 
+                product.external_category = 'get_vitalni_products_bmk'
+                product.save()
+
                 product_price = product.prices.filter(is_main=True).first()
                 product_price.price = price
                 product_price.save()
@@ -199,7 +198,7 @@ def get_vitalni_products_bmk():
                     manufacturer_id=manufacturer_id,
                     name=name,
                     external_id=prom,
-                    external_category='modul',
+                    external_category='get_vitalni_products_bmk',
                     external_seria=prom
                 )
                 product.category.add(category)
@@ -235,6 +234,8 @@ def get_vitalni_products_bmk():
                     if products.exists():
                         #Оновлюємо
                         product = products.first()
+                        product.external_category = 'get_vitalni_products_bmk'
+                        product.save()
 
                         product_price = product.prices.filter(is_main=True).first()
                         product_price.price = price
@@ -251,7 +252,7 @@ def get_vitalni_products_bmk():
                             manufacturer_id=manufacturer_id,
                             name=name,
                             external_id=prom,
-                            external_category='modul',
+                            external_category='get_vitalni_products_bmk',
                             external_seria=prom
                         )
                         product.category.add(category)
@@ -329,7 +330,7 @@ def get_vitalni_products_gerbor():
                     #Оновлюємо дані про товар
                     products = Product.objects.filter(external_id=prom,\
                                                       manufacturer_id=manufacturer_id,\
-                                                        external_category='modul',\
+                                                        external_category='get_vitalni_products_gerbor',\
                                                             external_seria=prom)
 
                     if products.exists():
