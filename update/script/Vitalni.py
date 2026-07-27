@@ -284,13 +284,11 @@ def get_vitalni_products_bmk():
 
     #Видаляємо товар якого немає в наявності
     products = Product.objects.filter(external_category=external_category)
-
+    logger.info('Видаляємо товар якого немає в наявності')
     for product in products:
 
         if product.id not in stock:
             product.delete()
-
-            
 
             logger.info('Видалино: ', product.name)
 
