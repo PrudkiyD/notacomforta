@@ -11,7 +11,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 def get_vitalni_products_bmk():
-    Product.objects.filter(manufacturer_id=8, external_category='modul').delete()
     path = File.objects.get(id=23).files
     logger.info(path)
     in_stock = []
@@ -285,13 +284,12 @@ def get_vitalni_products_bmk():
     #Видаляємо товар якого немає в наявності
     products = Product.objects.filter(external_category=external_category)
     logger.info('Видаляємо товар якого немає в наявності')
+    logger.info(stock)
     for product in products:
 
         if product.id not in stock:
             product.delete()
-
             logger.info('Видалино: ', product.name)
-
     
     Seria.objects.filter(products__isnull=True).delete()
 
