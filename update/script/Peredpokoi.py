@@ -86,6 +86,8 @@ def get_peredpokoi_products_gerbor():
                     if products.exists():
                         #Оновлюємо
                         product = products.first()
+                        product.external_category = 'external_category'
+                        product.save()
 
                         product_price = product.prices.filter(is_main=True).first()
                         product_price.price = price
@@ -103,7 +105,7 @@ def get_peredpokoi_products_gerbor():
                             manufacturer_id=manufacturer_id,
                             name=name,
                             external_id=prom,
-                            external_category='modul',
+                            external_category='external_category',
                             external_seria=modul_prom
                         )
                         product.category.add(category)
