@@ -507,13 +507,13 @@ def update_task(manufacturer):
             Stoly.get_stoly_jam()
 
             task_status.status = TaskExecution.Status.SUCCESS
-            task_status.result = f"Завершено. Оновлення не пропускає бот. В процесі вирішення."
+            task_status.result = f"Завершено."
             task_status.finished_at = timezone.now()
             task_status.save()
 
         except Exception as ex:
             task_status.status = TaskExecution.Status.FAILED
-            task_status.result = f"Сталася помилка. Оновлення не пропускає бот. В процесі вирішення."
+            task_status.result = f"Сталася помилка. {ex}"
             task_status.error = ex
             task_status.finished_at = timezone.now()
             task_status.save()
