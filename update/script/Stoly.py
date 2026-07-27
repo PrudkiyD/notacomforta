@@ -763,7 +763,7 @@ def get_stoly_jam():
                         index += 1
 
 
-                if product[0].external_id == 'https://jam.com.ua/obidnii-rozkladnyi-stil-boston-t-beton-chornyi-black-23/':
+                if product[0].external_id == 'https://jam.com.ua/kukhonnyi-stil-boston-seq-03-s/':
                    logger.info('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
                    logger.info(s['price'])
                 #logger.info('old', product[0].name)
