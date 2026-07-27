@@ -15,6 +15,7 @@ def get_vitalni_products_bmk():
     logger.info(path)
     in_stock = []
     external_category = 'vitalni_products_bmk'
+    stock = []
 
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[0]
@@ -86,6 +87,7 @@ def get_vitalni_products_bmk():
                         product_price.price = price
                         product_price.save()
 
+                        stock.append(product.id)
                         logger.info(f"old: {product.name}")
 
                         
@@ -110,6 +112,7 @@ def get_vitalni_products_bmk():
                             price=price
                         )
 
+                        stock.append(product.id)
                         logger.info(f'new: {name}')
 
                         
@@ -187,6 +190,7 @@ def get_vitalni_products_bmk():
                 product_price.price = price
                 product_price.save()
 
+                stock.append(product.id)
                 logger.info(f"old: {product.name}")
 
                 
@@ -211,6 +215,7 @@ def get_vitalni_products_bmk():
                     price=price
                 )
 
+                stock.append(product.id)
                 logger.info(f'new: {name}')
 
                 
@@ -228,7 +233,7 @@ def get_vitalni_products_bmk():
                     #Оновлюємо дані про товар
                     products = Product.objects.filter(external_id=prom,\
                                                         manufacturer_id=manufacturer_id,\
-                                                        external_category='modul',\
+                                                        external_category='get_vitalni_products_bmk',\
                                                             external_seria=prom)
 
                     if products.exists():
@@ -241,6 +246,7 @@ def get_vitalni_products_bmk():
                         product_price.price = price
                         product_price.save()
 
+                        stock.append(product.id)
                         logger.info(f"old: {product.name}")
 
                         
@@ -265,6 +271,7 @@ def get_vitalni_products_bmk():
                             price=price
                         )
 
+                        stock.append(product.id)
                         logger.info(f'new: {name}')
 
                         
@@ -273,6 +280,21 @@ def get_vitalni_products_bmk():
                     logger.info(name, prom, price)
                 except:
                     break
+
+    #Видаляємо товар якого немає в наявності
+    products = Product.objects.filter(external_category=external_category)
+
+    for product in products:
+
+        if product.id not in stock:
+            product.delete()
+
+            
+
+            logger.info('Видалино: ', product.name)
+
+    
+    Seria.objects.filter(products__isnull=True).delete()
 
 
 def get_vitalni_products_gerbor():
