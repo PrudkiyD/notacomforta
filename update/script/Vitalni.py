@@ -14,8 +14,7 @@ def get_vitalni_products_bmk():
     path = File.objects.get(id=23).files
     logger.info(path)
 
-    Product.objects.filter(manufacturer_id=7, external_category='modul',).delete()
-    Product.objects.filter(manufacturer_id=8, external_category='modul',).delete()
+    Product.objects.filter(manufacturer_id=7, external_category='modul',).update(external_category='get_vitalni_products_bmk')
 
 
     in_stock = []
@@ -330,7 +329,7 @@ def get_vitalni_products_gerbor():
                     #Оновлюємо дані про товар
                     products = Product.objects.filter(external_id=prom,\
                                                       manufacturer_id=manufacturer_id,\
-                                                        external_category='get_vitalni_products_gerbor',\
+                                                        external_category='modul',\
                                                             external_seria=prom)
 
                     if products.exists():
