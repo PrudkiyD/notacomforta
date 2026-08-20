@@ -60,14 +60,14 @@ def update_task(manufacturer):
             task_status.save()
 
             #Kyhni.get_seri_svitmebliv() змінився сайт потрібен новий парсер
-            Shafi.get_shafi_svitmebliv()
+            '''Shafi.get_shafi_svitmebliv()
             Shafi.get_stelazhi_svitmebliv()
             Lizhka.get_lizhka_product_svitmebliv()
-            Vitalni.get_vitalni_products_svitmebliv()
+            Vitalni.get_vitalni_products_svitmebliv()'''
             Peredpokoi.get_peredpokoi_products_svitmebliv()
-            Spalni.get_spalni_products_svitmebliv()
+            '''Spalni.get_spalni_products_svitmebliv()
             Dytyachi.get_dytyachi_products_svitmebliv()
-            Komody_tumby.get_komody_tumby_svitmebliv()
+            Komody_tumby.get_komody_tumby_svitmebliv()'''
 
         
             task_status.status = TaskExecution.Status.SUCCESS
