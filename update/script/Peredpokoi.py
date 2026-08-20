@@ -163,11 +163,12 @@ def get_peredpokoi_products_svitmebliv():
             match = re.search("Прихожі", cell)
 
             if match:
+                logger.info(f"{name}{sheet[r][c + 4].value} {sheet[r][c + 3].value}{sheet[r][c + 5].value}")
                 while True:
                     r += 1
                     try:
                         name = sheet[r][c].value
-                        logger.info(f"{name}{sheet[r][c + 4].value} {sheet[r][c + 3].value}{sheet[r][c + 5].value}")
+                        
                         price = int(sheet[r][c + 4].value)
                         prom = name.replace(' ', '').lower()
                         modul_cards.append({
