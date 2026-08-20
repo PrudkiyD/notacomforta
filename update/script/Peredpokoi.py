@@ -155,7 +155,7 @@ def get_peredpokoi_products_svitmebliv():
     book = openpyxl.load_workbook(filename=path)
     sheet = book.worksheets[0]
 
-    
+    logger.info('Передпокій не модульний')
     for r in range(sheet.max_row):
         r += 1
         for c in range(sheet.max_column):
@@ -192,6 +192,7 @@ def get_peredpokoi_products_svitmebliv():
                     except:
                         break
 
+    logger.info('Передпокій модульний')
     for r in range(sheet.max_row):
         r += 1
         for c in range(sheet.max_column):
@@ -251,7 +252,7 @@ def get_peredpokoi_products_svitmebliv():
                         break
             else:
                 pass
-    
+    logger.info('Рене')
     for r in range(sheet.max_row):
         r += 1
         for c in range(sheet.max_column):
