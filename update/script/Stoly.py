@@ -738,8 +738,6 @@ def get_stoly_jam():
         manufacturer = 21
         external_category = 'get_stoly_jam'
 
-        change_category(manufacturer, 'stoly', item['prom'], external_category)
-
         try:
         #Оновлюємо ціну
             product = Product.objects.filter(
@@ -840,10 +838,10 @@ def get_stoly_jam():
     #Видаляємо товар якого немає в наявності
     products = Product.objects.filter(external_category=external_category)
     logger.info('Видаляємо товар якого немає в наявності')
-    logger.info(stock)
     if stock:
         for product in products:
             if product.id not in stock:
+                logger.info( product.name)
                 product.delete()
 
-                logger.info( product.name)
+                
