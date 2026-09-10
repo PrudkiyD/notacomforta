@@ -609,9 +609,9 @@ def get_stoly_jam():
 
     if match:
         default_hash = match.group(1)
-        print("defaultHash:", default_hash)
+        logger.info(f"defaultHash: {default_hash}")
     else:
-        print("Хеш не знайдено")
+        logger.info("Хеш не знайдено")
 
     cookies = {
         "challenge_passed": default_hash
@@ -661,7 +661,7 @@ def get_stoly_jam():
     for url in prod_link:
         size = [None, None]
         prom = url['url']
-        logger.info('->',url['url'])
+        logger.info(f"-> {url['url']}")
         source = requests.get(url['url'],headers=HEADERS, cookies=cookies).text
         soup = BeautifulSoup(source, 'html.parser')
 
@@ -764,7 +764,7 @@ def get_stoly_jam():
 
                         index += 1
 
-                logger.info('old', product[0].name)
+                logger.info(f'old: {product[0].name}')
 
                 
 
@@ -827,7 +827,7 @@ def get_stoly_jam():
                         images_product.save()
 
 
-                logger.info('new', item['name'])
+                logger.info(f"new: {item['name']}")
 
                 
 
