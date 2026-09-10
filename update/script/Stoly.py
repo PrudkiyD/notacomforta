@@ -658,10 +658,11 @@ def get_stoly_jam():
 
     # Забераємо інформацію про товар
     logger.info("Забераємо інформацію про товар")
+    item_count = 1
     for url in prod_link:
         size = [None, None]
         prom = url['url']
-        logger.info(f"-> {url['url']}")
+        logger.info(f"{item_count} -> {url['url']}")
         source = requests.get(url['url'],headers=HEADERS, cookies=cookies).text
         soup = BeautifulSoup(source, 'html.parser')
 
@@ -672,7 +673,7 @@ def get_stoly_jam():
 
         logger.info(name)
         logger.info(price)
-
+        item_count += 1
 
         prop_list = soup.find('div', class_='product__column--right').find_all('div',  class_="modification")
 
