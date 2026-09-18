@@ -109,6 +109,10 @@ def category(request, category, subcategory=None):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    width_list = sorted(width_list)
+    height_list = sorted(height_list)
+    depth_list = sorted(depth_list)
+
     return render(request, 'catalog.html', {
         'title': title,
         'categorys': categorys,
