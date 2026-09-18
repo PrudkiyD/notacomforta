@@ -7,7 +7,8 @@ from .script import Kyhni, Shafi, Myakimebli, Lizhka, \
                     Matratsy, Komody_tumby, Peredpokoi, Vitalni, Spalni, \
                     Dytyachi, Matrolux_module, Stoly, Pcstoly, \
                     Kukhonni_kutochky, Stiltsi_taburety, RichmanUpdate
-
+from django.db.models import F, Func, Value
+from catalog.models import ProductPrice
 
 logger = logging.getLogger(__name__)
 
@@ -599,3 +600,9 @@ def update_task(manufacturer):
             task_status.error = ex
             task_status.finished_at = timezone.now()
             task_status.save()
+
+    ProductPrice.objects.all().update(
+            width=Func(F('width'), Value(' '), Value(''), function='REPLACE'),
+            height=Func(F('height'), Value(' '), Value(''), function='REPLACE'),
+            depth=Func(F('depth'), Value(' '), Value(''), function='REPLACE')
+            )

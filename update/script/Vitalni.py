@@ -8,6 +8,7 @@ import openpyxl
 import re
 import logging
 
+
 logger = logging.getLogger(__name__)
 
 def get_vitalni_products_bmk():
