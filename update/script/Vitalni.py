@@ -227,7 +227,7 @@ def get_vitalni_products_bmk():
                         
                     #---------------------------------------------------
 
-                    logger.info(name, prom, price)
+                    logger.info(f"{name} - {prom} - {price}")
                 except:
                     break
 
@@ -238,8 +238,9 @@ def get_vitalni_products_bmk():
     for product in products:
 
         if product.id not in stock:
+            logger.info(f"Видалено: {product.name}")
             product.delete()
-            logger.info(product.name)
+            
     
     Seria.objects.filter(products__isnull=True).delete()
 
