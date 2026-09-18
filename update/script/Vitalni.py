@@ -249,7 +249,6 @@ def get_vitalni_products_bmk():
     products = Product.objects.filter(external_category=external_category).all()
     logger.info(f"Товарів з external_category {external_category} {len(products)}")
     logger.info('Видаляємо товар якого немає в наявності')
-    '''
     for product in products:
         if product.id not in stock:
             logger.info(f"Видалено: {product.name}")
@@ -257,7 +256,7 @@ def get_vitalni_products_bmk():
             
     
     Seria.objects.filter(products__isnull=True).delete()
-    '''
+    
 
 
 def get_vitalni_products_gerbor():
