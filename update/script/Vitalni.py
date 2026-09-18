@@ -14,7 +14,7 @@ def get_vitalni_products_bmk():
     path = File.objects.get(id=23).files
     logger.info(path)
     in_stock = []
-    external_category = 'vitalni_products_bmk'
+    external_category = 'get_vitalni_products_bmk'
     stock = []
 
     book = openpyxl.load_workbook(filename=path)
