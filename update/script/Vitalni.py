@@ -53,6 +53,8 @@ def get_vitalni_products_bmk():
                         seria = serias.first()
 
                         logger.info(f"old modul: {seria.name}")
+                        logger.info(f"Ціна з прайса {price}")
+                        logger.info(f"Оновлена ціна {product_price.price}")
 
                         
 
