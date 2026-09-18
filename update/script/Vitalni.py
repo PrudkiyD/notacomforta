@@ -193,12 +193,13 @@ def get_vitalni_products_bmk():
                         product.save()
 
                         product_price = product.prices.filter(is_main=True).first()
-                        logger.info(product_price.price)
                         product_price.price = price
                         product_price.save()
 
                         stock.append(product.id)
-                        logger.info(f"old: {product.name} -> ціна з прайса {price}")
+                        logger.info(f"old: {product.name}")
+                        logger.info(f"Ціна з прайса {price}")
+                        logger.info(f"Оновлена ціна {product_price.price}")
                         
 
                         
