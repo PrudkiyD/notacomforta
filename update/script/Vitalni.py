@@ -198,6 +198,7 @@ def get_vitalni_products_bmk():
 
                         stock.append(product.id)
                         logger.info(f"old: {product.name} -> ціна з прайса {price}")
+                        logger.info(product_price)
 
                         
                     
