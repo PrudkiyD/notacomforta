@@ -119,9 +119,15 @@ def get_vitalni_products_bmk():
 
                         
                     #---------------------------------------------------
-                except:
+                except Exception as ex:
+                    logger.info("Error")
+                    logger.info(ex)
+                    logger.info("Error")
                     row = i
                     break
+
+
+    logger.info("-=Модульні=-")
 
     for r in range(sheet.max_row):
         r += row
