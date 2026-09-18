@@ -367,7 +367,7 @@ def get_vitalni_products_gerbor():
 
 
     #Видаляємо товар якого немає в наявності
-    products = Product.objects.filter(external_category=external_category)
+    products = Product.objects.filter(external_category=external_category).all()
     logger.info('Видаляємо товар якого немає в наявності')
     logger.info(stock)
     for product in products:
