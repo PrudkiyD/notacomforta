@@ -66,12 +66,12 @@ def category(request, category, subcategory=None):
                      .order_by('width')
     
     
-    height_list = products.filter(~Q(width=None), ~Q(width="None"), ~Q(width="")) \
+    height_list = products.filter(~Q(height=None), ~Q(height="None"), ~Q(height="")) \
                     .values_list('height', flat=True)\
                     .distinct()\
                     .order_by('height')
                     
-    depth_list = products.filter(~Q(width=None), ~Q(width="None"), ~Q(width="")) \
+    depth_list = products.filter(~Q(depth=None), ~Q(depth="None"), ~Q(depth="")) \
                             .values_list('depth', flat=True)\
                             .distinct()\
                             .order_by('depth')
