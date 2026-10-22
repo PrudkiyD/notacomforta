@@ -1,5 +1,6 @@
 from decouple import config
 from pathlib import Path
+from celery.schedules import crontab
 import os
 
 
@@ -83,6 +84,13 @@ DATABASES = {
 
 CELERY_BROKER_URL = config("CELERY_BROKER_URL")
 CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND")
+
+CELERY_BEAT_SCHEDULE = {
+    "log-product-images-count-every-4-hours": {
+        "task": "catalog.tasks.log_product_images_count",
+        "schedule": crontab(minute=0, hour="*/4"),
+    },
+}
 
 
 AUTH_PASSWORD_VALIDATORS = [
